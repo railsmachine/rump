@@ -1,24 +1,13 @@
 #!/usr/bin/env ruby 
 
-require 'pathname'
-
-root = Pathname.new(File.expand_path(File.dirname(__FILE__)))
-
-if ENV['USER'] != "root"
-  puts "You must be root to run this!"
-  exit 1 
+begin 
+  require 'rump'
+rescue LoadError
+  $: << File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib'))
+  require 'rump'
 end
 
-unless system("which puppet > /dev/null")
-  puts "You don't have Puppet installed!"
-  exit 2
-end
+command   = ARGV.first
+arguments = ARGV[1..-1]
 
-args = %w(puppet)
-args << "--modulepath #{root.join('modules')}"
-args << "#{root.join('manifests', 'site.pp')}"
-args += ARGV
-
-command = args.join(' ')
-puts command if args.include?("--debug")
-system(command)
+Rump.new.invoke(command, arguments)
