@@ -31,13 +31,10 @@ Make sure your hostname is set:
     $ sudo hostname -F /etc/hostname
 
 
-Getting the repository
-----------------------
+Using Rump
+----------
 
-On the target machine, make sure you have an SSH key for the machine where
-your Puppet repo is kept. 
-
-Now you can check out the repository: 
+Check out your repository of Puppet manifests: 
 
     $ rump clone git@github.com:railsmachine/puppet.git
 
@@ -62,5 +59,13 @@ You can append options you'd normally pass to the `puppet` command at the end
 of `rump`: 
 
     $ sudo ./rump --verbose --debug --noop
+
+
+Testing Rump 
+------------
+
+There's a suite of Cucumber tests to fully exercise Rump in `features/`: 
+
+    $ cucumber features/
 
 
