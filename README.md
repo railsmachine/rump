@@ -9,14 +9,6 @@ push them up to a central repository somewhere else to share the changes.
 This also works well with a Capistrano-style deployment, where you remotely 
 instruct Rump to check out a copy of the latest manifests and run them. 
 
-Quirks
-------
-
-1. Puppet's fileserver (`source => "puppet:///..."` on File resources) doesn't 
-   appear to work. For now, all files need to be templates. 
-
-2. Manifests need to be modules so Puppet can pick them up correctly. 
-
 Installing dependencies
 -----------------------
 
@@ -38,7 +30,8 @@ Check out your repository of Puppet manifests:
 
     $ rump clone git@github.com:railsmachine/puppet.git
 
-You'll want to set up a `~/.gitconfig` in your home directory too: 
+You'll want to set up a `~/.gitconfig` in your home directory so you know who's
+making changes: 
 
     [user]
     name = My Name
@@ -47,18 +40,32 @@ You'll want to set up a `~/.gitconfig` in your home directory too:
     [push]
     default = matching
 
+There's nothing stopping you from running Rump against different checkouts/branches
+of manifests. This is especially powerful when developing locally with the following
+workflow: 
+
+   1. `rump clone git@github.com:railsmachine/puppet.git`
+   2. `rump go`
+   3. `cd puppet && git checkout -b new_feature`
+   4. make your changes && `rump go`
+   5. iterate until everything's working
+   6. `git checkout master && git merge new_feature`
+   7. `git push`
+
 
 Running Puppet
 --------------
 
 When you make changes, run Puppet through Rump: 
 
-    $ sudo ./rump
+    $ sudo ./rump go
+
+(I would love to use `run` instead of `go`, but `run` is a reserved word in Thor)
 
 You can append options you'd normally pass to the `puppet` command at the end
-of `rump`: 
+of `rump go`: 
 
-    $ sudo ./rump --verbose --debug --noop
+    $ sudo ./rump go --verbose --debug --noop
 
 
 Testing Rump 
@@ -68,4 +75,12 @@ There's a suite of Cucumber tests to fully exercise Rump in `features/`:
 
     $ cucumber features/
 
+
+Quirks
+------
+
+1. Puppet's fileserver (`source => "puppet:///..."` on File resources) doesn't 
+   appear to work. For now, all files need to be templates. 
+
+2. Manifests need to be modules so Puppet can pick them up correctly. 
 
