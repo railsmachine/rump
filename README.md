@@ -67,6 +67,28 @@ of `rump go`:
 
     $ sudo ./rump go --verbose --debug --noop
 
+Freezing Puppet
+---------------
+
+If you are using git, you can freeze Puppet into your project as a submodule. This
+gives you a whole bunch of advantages: 
+
+ * You only need Ruby installed on your system to run Puppet
+ * A checkout of your manifests also gives you Puppet
+ * Bind your manifests to a particular version of Puppet 
+ * Test your manifests against new versions of Puppet in a separate branch
+ * Manage upgrades of Puppet outside your operating system's release cycle
+
+You can freeze Puppet very easily: 
+
+    $ rump freeze puppet git://github.com/reductivelabs/puppet.git
+    $ rump freeze facter git://github.com/reductivelabs/facter.git
+
+This will freeze Puppet + Facter under `vendor/`. Alternatively, you can point 
+the freezer at any Git repository (local or remote). 
+
+When you run `rump go`, it checks whether you have frozen Puppet + Facter, and
+runs the frozen Puppet if available.
 
 Testing Rump 
 ------------
@@ -74,6 +96,11 @@ Testing Rump
 There's a suite of Cucumber tests to fully exercise Rump in `features/`: 
 
     $ cucumber features/
+
+The scenarios are tagged with `@offline` and `@online`, depending on whether 
+the test requires internet connectivity. Run all but `@online` tests with: 
+
+    $ cucumber --tags ~@online features/
 
 
 Quirks
