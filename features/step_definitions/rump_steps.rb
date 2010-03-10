@@ -73,5 +73,5 @@ Given /^there is no "([^\"]*)" file$/ do |file|
 end
 
 Given /^"([^\"]*)" is on my path$/ do |command|
-  system("which #{command}").should be_true
+  system("which #{command} > /dev/null").should be_true
 end
