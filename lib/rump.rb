@@ -40,6 +40,7 @@ class Rump < Thor
         args << "-I #{@root.join('vendor', dir, 'lib')}" 
       end
       args << "#{@root.join('vendor', 'puppet', 'bin', 'puppet')}"
+      puts "Using frozen Puppet from #{@root.join('vendor', 'puppet')}."
     else
       unless system("which puppet > /dev/null")
         puts "You don't have Puppet installed!"
