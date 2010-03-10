@@ -60,10 +60,21 @@ class Rump < Thor
     system(command) ? exit(0) : exit(1)
   end
 
-  desc "freeze repository project", "freeze Puppet into your manifests repository"
-  def freeze(project, repository)
-    command = "git submodule add #{repository} #{@root.join('vendor', project)}"
-    system(command) ? exit(0) : exit(1)
+  desc "freeze [repository project]", "freeze Puppet into your manifests repository"
+  def freeze(*args)
+    commands = [] 
+    if args.size == 2
+      repository = args.first
+      project    = args.last
+      commands << "git submodule add #{repository} #{@root.join('vendor', project)}"
+    else
+      commands << "git submodule add git://github.com/reductivelabs/puppet.git #{@root.join('vendor', 'puppet')}"
+      commands << "git submodule add git://github.com/reductivelabs/facter.git #{@root.join('vendor', 'facter')}"
+    end
+
+    commands.each do |command|
+      exit(1) unless system(command)
+    end
   end
 
   private 
