@@ -64,8 +64,8 @@ class Rump < Thor
   def freeze(*args)
     commands = [] 
     if args.size == 2
-      repository = args.first
-      project    = args.last
+      project    = args.first
+      repository = args.last
       commands << "git submodule add #{repository} #{@root.join('vendor', project)}"
     else
       commands << "git submodule add git://github.com/reductivelabs/puppet.git #{@root.join('vendor', 'puppet')}"
