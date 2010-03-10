@@ -77,6 +77,56 @@ class Rump < Thor
     end
   end
 
+  desc "scaffold project", "generate scaffolding for a repository of Puppet manifests"
+  def scaffold(project)
+    [ @root.join(project),
+      @root.join(project, 'manifests'),
+      @root.join(project, 'modules'),
+      @root.join(project, 'vendor') ].each do |directory|
+      FileUtils.mkdir_p(directory)
+    end
+
+    File.open(@root.join(project, 'README'), 'w') do |f|
+      f << <<-README.gsub(/^ {8}/, '')
+        #{project} manifests
+        #{"=" * project.size}==========
+
+        modules/ <= Puppet modules
+        manifests/ <= Puppet nodes 
+        vendor/ <= frozen Puppet + Facter
+
+        Running Puppet with Rump
+        ------------------------
+
+        From within this directory, run: 
+
+            rump go
+
+        You can pass options to Puppet after the 'go': 
+
+            rump go --debug --test 
+
+        Freezing Puppet
+        ---------------
+
+        Firstly, you need to create a git repository: 
+
+            git init 
+
+        Now you can freeze Puppet: 
+
+            rump freeze 
+
+        Once Rump has frozen Puppet, commit the changes: 
+
+            git commit -m 'added facter + puppet submodules' .
+
+        Now Rump will use the frozen Puppet when you run 'rump go'.
+
+      README
+    end
+  end
+
   private 
   def has_frozen_components?
     vendored = Dir.glob("#{@root.join('vendor')}/*").map {|v| v.split('/').last}
