@@ -37,6 +37,8 @@ class Rump < Thor
     
     args = %w(puppet)
     args << "--modulepath #{root.join('modules')}"
+    args << "--confdir #{root.join('etc')}" unless puppet_args.include?("--confdir")
+    args << "--vardir #{root.join('var')}" unless puppet_args.include?("--vardir")
     args << "#{root.join('manifests', 'site.pp')}"
     args += puppet_args
 
