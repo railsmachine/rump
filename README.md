@@ -1,7 +1,7 @@
 Rump 
 ====
 
-Rump lets you run Puppet locally against a git checkout. 
+Rump lets you run Puppet locally against a Git checkout. 
 
 This allows you to locally iterate your Puppet manifests very quickly, then 
 push them up to a central repository somewhere else to share the changes. 
@@ -70,7 +70,7 @@ of `rump go`:
 Freezing Puppet
 ---------------
 
-If you are using git, you can freeze Puppet into your project as a submodule. This
+If you are using Git, you can freeze Puppet into your project as a submodule. This
 gives you a whole bunch of advantages: 
 
  * You only need Ruby installed on your system to run Puppet
