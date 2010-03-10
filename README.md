@@ -81,14 +81,19 @@ gives you a whole bunch of advantages:
 
 You can freeze Puppet very easily: 
 
-    $ rump freeze puppet git://github.com/reductivelabs/puppet.git
-    $ rump freeze facter git://github.com/reductivelabs/facter.git
+    $ rump freeze 
 
 This will freeze Puppet + Facter under `vendor/`. Alternatively, you can point 
 the freezer at any Git repository (local or remote). 
 
 When you run `rump go`, it checks whether you have frozen Puppet + Facter, and
 runs the frozen Puppet if available.
+
+You can also freeze in arbitrary Git repos: 
+
+    $ rump freeze moonshine git://github.com/railsmachine/moonshine.git
+
+These will automatically be added to the load path when you run `rump go`
 
 Testing Rump 
 ------------
