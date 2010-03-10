@@ -49,3 +49,18 @@ Feature: Rump
     And I run "rump go"
     Then I should see a file at "/tmp/checkout"
 
+  @offline
+  Scenario: Generating project scaffolding
+    Given I am working in "/tmp/"
+    When I run "rump scaffold my-new-project"
+    Given I am working in "/tmp/my-new-project"
+    Then I should see the following directories: 
+      | directory                     |
+      | /tmp/my-new-project           | 
+      | /tmp/my-new-project/manifests |
+      | /tmp/my-new-project/modules   |
+      | /tmp/my-new-project/vendor    |
+    And I should see a file at "/tmp/my-new-project/README"
+
+
+

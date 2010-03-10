@@ -75,3 +75,9 @@ end
 Given /^"([^\"]*)" is on my path$/ do |command|
   system("which #{command} > /dev/null").should be_true
 end
+
+Then /^I should see the following directories:$/ do |table|
+  table.hashes.each do |attrs|
+    File.directory?(attrs["directory"]).should be_true
+  end
+end
