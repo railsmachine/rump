@@ -72,6 +72,6 @@ Given /^there is no "([^\"]*)" file$/ do |file|
   FileUtils.rm_rf(file).should be_true
 end
 
-Given /^"([^\"]*)" is installed on my system$/ do |command|
+Given /^"([^\"]*)" is on my path$/ do |command|
   system("which #{command}").should be_true
 end
