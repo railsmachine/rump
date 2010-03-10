@@ -36,8 +36,9 @@ class Rump < Thor
     args = []
     if has_frozen_components?
       args << "ruby" 
-      args << "-I #{@root.join('vendor', 'facter', 'lib')}" 
-      args << "-I #{@root.join('vendor', 'puppet', 'lib')}"
+      Dir.glob("#{@root.join('vendor')}/*").each do |dir|
+        args << "-I #{@root.join('vendor', dir, 'lib')}" 
+      end
       args << "#{@root.join('vendor', 'puppet', 'bin', 'puppet')}"
     else
       unless system("which puppet > /dev/null")
