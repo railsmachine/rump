@@ -23,6 +23,7 @@ class Rump < Thor
     
   desc "clone repository [directory]", "clone a Git repository of Puppet manifests"
   def clone(repository, directory=nil)
+    abort_unless_git_installed
     command = "git clone -q #{repository} #{directory}"
     system(command)
   end
@@ -63,6 +64,8 @@ class Rump < Thor
 
   desc "freeze [repository project]", "freeze Puppet into your manifests repository"
   def freeze(*args)
+    abort_unless_git_installed
+
     commands = [] 
     if args.size == 2
       project    = args.first
@@ -132,6 +135,18 @@ class Rump < Thor
   def has_frozen_components?
     vendored = Dir.glob("#{@root.join('vendor')}/*").map {|v| v.split('/').last}
     vendored.include?("puppet") && vendored.include?("facter")
+  end
+
+  def abort_unless_git_installed
+    unless git_installed?
+      puts "You don't have Git installed!"
+      puts "Please either install it on your system."
+      exit 2
+    end
+  end
+
+  def git_installed?
+    system("which git > /dev/null") == 0 ? true : false
   end
 
 
