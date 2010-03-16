@@ -43,11 +43,7 @@ class Rump < Thor
       args << "#{@root.join('vendor', 'puppet', 'bin', 'puppet')}"
       puts "Using frozen Puppet from #{@root.join('vendor', 'puppet')}."
     else
-      unless system("which puppet > /dev/null")
-        puts "You don't have Puppet installed!"
-        puts "Please either install it on your system or freeze it with 'rump freeze'"
-        exit 2
-      end
+      abort_unless_puppet_installed(:message => "Please either install it on your system or freeze it with 'rump freeze'")
       args << "puppet"
     end
     args << "--modulepath #{@root.join('modules')}"
@@ -137,18 +133,23 @@ class Rump < Thor
     vendored.include?("puppet") && vendored.include?("facter")
   end
 
-  def abort_unless_git_installed
-    unless git_installed?
-      puts "You don't have Git installed!"
-      puts "Please either install it on your system."
-      exit 2
+  # helper + abortive methods 
+  %w(puppet git).each do |bin|
+    class_eval <<-METHOD, __FILE__, __LINE__
+      def #{bin}_installed?
+        `which #{bin}` =~ /#{bin}$/ ? true : false
+      end
+
+      def abort_unless_#{bin}_installed(opts={})
+        unless #{bin}_installed?
+          puts "You don't have #{bin.capitalize} installed!"
+          puts opts[:message] || "Please install it on your system."
+          exit 2
+        end
+      end
+      METHOD
     end
   end
-
-  def git_installed?
-    system("which git > /dev/null") == 0 ? true : false
-  end
-
 
 end
 
