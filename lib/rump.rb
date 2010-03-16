@@ -136,19 +136,20 @@ class Rump < Thor
   # helper + abortive methods 
   %w(puppet git).each do |bin|
     class_eval <<-METHOD, __FILE__, __LINE__
-      def #{bin}_installed?
-        `which #{bin}` =~ /#{bin}$/ ? true : false
-      end
-
-      def abort_unless_#{bin}_installed(opts={})
-        unless #{bin}_installed?
-          puts "You don't have #{bin.capitalize} installed!"
-          puts opts[:message] || "Please install it on your system."
-          exit 2
+      no_tasks do 
+        def #{bin}_installed?
+          `which #{bin}` =~ /#{bin}$/ ? true : false
+        end
+  
+        def abort_unless_#{bin}_installed(opts={})
+          unless #{bin}_installed?
+            puts "You don't have #{bin.capitalize} installed!"
+            puts opts[:message] || "Please install it on your system."
+            exit 2
+          end
         end
       end
-      METHOD
-    end
+    METHOD
   end
 
 end
