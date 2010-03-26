@@ -1,0 +1,27 @@
+#!/usr/bin/env ruby
+
+require "socket"
+
+name     = ENV['GIT_AUTHOR_NAME']
+email    = ENV['GIT_AUTHOR_EMAIL']
+hostname = Socket.gethostname
+
+@errors = []
+if name == "root" || name =~ /^\s*$/
+  @errors << "Your author name is '#{name}'."
+  @errors << "Please set this to your real name before committing."
+end
+
+if email =~ /^\s*$/ || email =~ /#{hostname}/
+  @errors << "You author email is '#{email}'."
+  @errors << "This matches part of the system hostname (#{hostname})."
+  @errors << "If this is correct, please run again with --no-verify."
+end
+
+if @errors.size > 0
+  puts @errors
+  exit 1 
+else 
+  exit 0
+end
+
