@@ -19,6 +19,7 @@ class Rump < Thor
   def initialize
     super
     @root = Pathname.new(Dir.getwd)
+    @install_root = Pathname.new(File.expand_path(File.join(File.dirname(__FILE__))))
   end
     
   desc "clone repository [directory]", "clone a Git repository of Puppet manifests"
@@ -124,6 +125,19 @@ class Rump < Thor
         Now Rump will use the frozen Puppet when you run 'rump go'.
 
       README
+    end
+  end
+
+  desc "init project", "generate scaffolding for a repository of Puppet manifests"
+  def init(project)
+    scaffold(project)
+    repo_path = @root.join(project)
+    template_path = @install_root.join('generators', 'git')
+   
+    Dir.chdir(repo_path) do 
+      command = "git init --template=#{template_path}"
+      puts command
+      system(command)
     end
   end
 
