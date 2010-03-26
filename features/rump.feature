@@ -1,8 +1,10 @@
 Feature: Rump 
   To iterate quickly 
-  When writing Puppet manifests
+  When writing and running
+  Puppet manifests
   A user 
   Should have a helper tool
+  To smooth things out
 
   @offline
   Scenario: Cloning a repository
@@ -23,6 +25,19 @@ Feature: Rump
     Given I am working in "/tmp/simple-puppet"
     When I run "rump go"
     Then I should see a file at "/tmp/checkout"
+
+  @offline
+  Scenario: Initialising a safe repo 
+    Given I am working in "/tmp"
+    And there is no "safe-puppet" repository
+    And there is no "/tmp/checkout" file
+    When I run "rump init safe-puppet"
+    Given I am working in "/tmp/safe-puppet"
+    When I touch "/tmp/safe-puppet/random"
+    When I run "git add ."
+    When I run "GIT_AUTHOR_NAME='root' git commit -m 'created random' ."
+    Then the command should fail
+
 
   @online
   Scenario: Freezing Puppet + Facter as submodules
