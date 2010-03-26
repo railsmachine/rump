@@ -35,8 +35,7 @@ Feature: Rump
     Given I am working in "/tmp/safe-puppet"
     When I touch "/tmp/safe-puppet/random"
     When I run "git add ."
-    When I run "GIT_AUTHOR_NAME='root' git commit -m 'created random' ."
-    Then the command should fail
+    Then running "GIT_AUTHOR_NAME=root git commit -m 'created random' ." should fail
 
 
   @online
