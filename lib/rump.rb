@@ -136,7 +136,6 @@ class Rump < Thor
    
     Dir.chdir(repo_path) do 
       command = "git init --template=#{template_path}"
-      puts command
       system(command)
     end
   end
