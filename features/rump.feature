@@ -32,11 +32,31 @@ Feature: Rump
     And there is no "safe-puppet" repository
     And there is no "/tmp/checkout" file
     When I run "rump init safe-puppet"
+    Then I should have a git repository at "safe-puppet"
+
+  @offline 
+  Scenario: Verifying author name
+    Given I am working in "/tmp"
+    And there is no "safe-puppet" repository
+    And there is no "/tmp/checkout" file
+    When I run "rump init safe-puppet"
+    Then I should have a git repository at "safe-puppet"
     Given I am working in "/tmp/safe-puppet"
     When I touch "/tmp/safe-puppet/random"
     When I run "git add ."
     Then running "GIT_AUTHOR_NAME=root git commit -m 'created random' ." should fail
 
+  @offline 
+  Scenario: Verifying author email
+    Given I am working in "/tmp"
+    And there is no "safe-puppet" repository
+    And there is no "/tmp/checkout" file
+    When I run "rump init safe-puppet"
+    Then I should have a git repository at "safe-puppet"
+    Given I am working in "/tmp/safe-puppet"
+    When I touch "/tmp/safe-puppet/random"
+    When I run "git add ."
+    Then running "GIT_AUTHOR_EMAIL=me@$(hostname) git commit -m 'created random' ." should fail
 
   @online
   Scenario: Freezing Puppet + Facter as submodules
