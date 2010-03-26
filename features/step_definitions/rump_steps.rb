@@ -32,6 +32,12 @@ When /^I run "([^\"]*)"$/ do |cmd|
   end
 end
 
+Then /^running "([^\"]*)" should fail$/ do |command|
+  Dir.chdir(@basedir) do 
+    system(command).should be_false
+  end
+end
+
 Then /^I should have a git repository at "([^\"]*)"$/ do |repo_name|
   repo_path = @basedir.join(repo_name)
   File.exists?(repo_path.join('.git')).should be_true
@@ -80,4 +86,8 @@ Then /^I should see the following directories:$/ do |table|
   table.hashes.each do |attrs|
     File.directory?(attrs["directory"]).should be_true
   end
+end
+
+When /^I touch "([^\"]*)"$/ do |filename|
+  system("touch #{filename} > /dev/null").should be_true
 end
