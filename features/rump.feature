@@ -83,6 +83,21 @@ Feature: Rump
     And I run "rump go"
     Then I should see a file at "/tmp/checkout"
 
+  @online
+  Scenario: Freezing a specific submodule at a specific release
+    Given I am working in "/tmp"
+    And I have a simple Puppet repository named "foobar"
+    And there is no "tagged-puppet" repository
+    And there is no "/tmp/checkout" file
+    When I run "rump clone foobar tagged-puppet"
+    Given I am working in "/tmp/tagged-puppet"
+    When I run "rump freeze facter git://github.com/reductivelabs/facter.git --release=1.5.7"
+    And I run "rump freeze puppet git://github.com/reductivelabs/puppet.git --release=0.25.4"
+    And I run "rump go"
+    Then I should see a file at "/tmp/checkout"
+
+
+
   @offline
   Scenario: Generating project scaffolding
     Given I am working in "/tmp/"
