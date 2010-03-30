@@ -84,6 +84,17 @@ Feature: Rump
     When I run "git add ."
     Then running "GIT_AUTHOR_NAME=$(git config user.name) git commit -m 'created random' ." should succeed
 
+  @offline 
+  Scenario: Getting author name and email
+    Given I am working in "/tmp"
+    And there is no "whoami-getter-puppet" repository
+    And there is no "/tmp/checkout" file
+    When I run "rump init whoami-getter-puppet"
+    Then I should have a git repository at "whoami-getter-puppet"
+    Given I am working in "/tmp/whoami-getter-puppet"
+    When I run "rump whoami 'Spoons McDoom <spoons@mcdoom.com>'"
+    Then running "rump whoami" should output "Spoons McDoom <spoons@mcdoom.com>"
+
   @online
   Scenario: Freezing Puppet + Facter as submodules
     Given I am working in "/tmp"
