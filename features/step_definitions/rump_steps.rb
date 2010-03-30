@@ -44,6 +44,21 @@ Then /^running "([^\"]*)" should succeed$/ do |command|
   end
 end
 
+Then /^running "([^\"]*)" should output "([^\"]*)"$/ do |cmd, string|
+  if cmd.split(' ').first == "rump"
+    command = %w(ruby -rubygems)
+    command << ROOT.join('bin', 'rump')
+    command << cmd.split[1..-1].join(' ')
+    command = command.join(' ')
+  else
+    command = cmd
+  end
+
+  Dir.chdir(@basedir) do 
+    (`#{command}` =~ /#{string}/).should be_true
+  end
+end
+
 Then /^I should have a git repository at "([^\"]*)"$/ do |repo_name|
   repo_path = @basedir.join(repo_name)
   File.exists?(repo_path.join('.git')).should be_true
