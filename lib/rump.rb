@@ -64,17 +64,24 @@ class Rump < Thor
     abort_unless_git_installed
 
     commands = [] 
-    if args.size == 2
-      project    = args.first
-      repository = args.last
-      commands << "git submodule add #{repository} #{@root.join('vendor', project)}"
+    if args.size >= 2
+      project    = args[0]
+      repository = args[1]
+      commands << { :command => "git submodule add #{repository} #{@root.join('vendor', project)}" }
+      if args.detect { |arg| arg =~ /^--release\=(.+)/ }
+        commands << { :command => "git checkout #{$1}", :directory => @root.join('vendor', project) }
+      end
+
     else
-      commands << "git submodule add git://github.com/reductivelabs/puppet.git #{@root.join('vendor', 'puppet')}"
-      commands << "git submodule add git://github.com/reductivelabs/facter.git #{@root.join('vendor', 'facter')}"
+      commands << { :command => "git submodule add git://github.com/reductivelabs/puppet.git #{@root.join('vendor', 'puppet')}" }
+      commands << { :command => "git submodule add git://github.com/reductivelabs/facter.git #{@root.join('vendor', 'facter')}" }
     end
 
-    commands.each do |command|
-      exit(1) unless system(command)
+    commands.each do |attrs|
+      dir = attrs[:directory] || @root
+      Dir.chdir(dir) do
+        exit(1) unless system(attrs[:command])
+      end
     end
   end
 
