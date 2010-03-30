@@ -158,12 +158,12 @@ class Rump < Thor
         abort("Supplied address isn't a valid rfc2822 email address") 
       end
   
-      system("git config user.name #{name}")
-      system("git config user.email #{email}")
+      system("git config user.name '#{name}'")
+      system("git config user.email '#{email}'")
     # setter
     else 
-      name = `git config user.name`
-      email = `git config user.email`
+      name = `git config user.name`.strip
+      email = `git config user.email`.strip
       puts "#{name} <#{email}>"
     end
   end
