@@ -147,6 +147,27 @@ class Rump < Thor
     end
   end
 
+  desc "whoami [rfc2822-address]", "set the current commit author"
+  def whoami(address=nil)
+    # getter
+    if address
+      name  = address[/^(.+)\s+</, 1]
+      email = address[/<(.+)>$/, 1]
+  
+      unless name && email 
+        abort("Supplied address isn't a valid rfc2822 email address") 
+      end
+  
+      system("git config user.name #{name}")
+      system("git config user.email #{email}")
+    # setter
+    else 
+      name = `git config user.name`
+      email = `git config user.email`
+      puts "#{name} <#{email}>"
+    end
+  end
+
   private 
   def has_frozen_components?
     vendored = Dir.glob("#{@root.join('vendor')}/*").map {|v| v.split('/').last}
