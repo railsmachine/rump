@@ -38,6 +38,12 @@ Then /^running "([^\"]*)" should fail$/ do |command|
   end
 end
 
+Then /^running "([^\"]*)" should succeed$/ do |command|
+  Dir.chdir(@basedir) do 
+    system(command).should be_true
+  end
+end
+
 Then /^I should have a git repository at "([^\"]*)"$/ do |repo_name|
   repo_path = @basedir.join(repo_name)
   File.exists?(repo_path.join('.git')).should be_true
