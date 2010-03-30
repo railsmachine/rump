@@ -128,7 +128,7 @@ class Rump < Thor
     end
   end
 
-  desc "init project", "generate scaffolding for a repository of Puppet manifests"
+  desc "init project", "initialise a repo of scaffolded Puppet manifests"
   def init(project)
     scaffold(project)
     repo_path = @root.join(project)
