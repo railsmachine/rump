@@ -58,6 +58,32 @@ Feature: Rump
     When I run "git add ."
     Then running "GIT_AUTHOR_EMAIL=me@$(hostname) git commit -m 'created random' ." should fail
 
+  @offline 
+  Scenario: Setting author email
+    Given I am working in "/tmp"
+    And there is no "whoami-email-puppet" repository
+    And there is no "/tmp/checkout" file
+    When I run "rump init whoami-email-puppet"
+    Then I should have a git repository at "whoami-email-puppet"
+    Given I am working in "/tmp/whoami-email-puppet"
+    When I run "rump whoami 'Spoons McDoom <spoons@mcdoom.com>'"
+    When I touch "/tmp/whoami-email-puppet/random"
+    When I run "git add ."
+    Then running "GIT_AUTHOR_EMAIL=$(git config user.email) git commit -m 'created random' ." should succeed
+
+  @offline 
+  Scenario: Setting author name
+    Given I am working in "/tmp"
+    And there is no "whoami-name-puppet" repository
+    And there is no "/tmp/checkout" file
+    When I run "rump init whoami-name-puppet"
+    Then I should have a git repository at "whoami-name-puppet"
+    Given I am working in "/tmp/whoami-name-puppet"
+    When I run "rump whoami 'Spoons McDoom <spoons@mcdoom.com>'"
+    When I touch "/tmp/whoami-name-puppet/random"
+    When I run "git add ."
+    Then running "GIT_AUTHOR_NAME=$(git config user.name) git commit -m 'created random' ." should succeed
+
   @online
   Scenario: Freezing Puppet + Facter as submodules
     Given I am working in "/tmp"
