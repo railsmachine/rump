@@ -165,7 +165,7 @@ class Rump < Thor
       name = `git config user.name`.strip
       email = `git config user.email`.strip
 
-      if name.blank? || email.blank?
+      if name.empty? || email.empty?
         puts "You don't have a name or email set."
       else
         puts "#{name} <#{email}>"
