@@ -22,7 +22,7 @@ class Rump < Thor
     @install_root = Pathname.new(File.expand_path(File.join(File.dirname(__FILE__))))
   end
     
-  desc "clone repository [directory]", "clone a Git repository of Puppet manifests"
+  desc "clone <repository> [directory]", "clone a Git repository of Puppet manifests"
   def clone(repository, directory=nil)
     abort_unless_git_installed
     command = "git clone -q #{repository} #{directory}"
@@ -59,7 +59,7 @@ class Rump < Thor
     system(command) ? exit(0) : exit(1)
   end
 
-  desc "freeze [repository project]", "freeze Puppet into your manifests repository"
+  desc "freeze [repository, project]", "freeze Puppet into your manifests repository"
   def freeze(*args)
     abort_unless_git_installed
 
@@ -85,7 +85,7 @@ class Rump < Thor
     end
   end
 
-  desc "scaffold project", "generate scaffolding for a repository of Puppet manifests"
+  desc "scaffold <project>", "generate scaffolding for a repository of Puppet manifests"
   def scaffold(project)
     [ @root.join(project),
       @root.join(project, 'manifests'),
@@ -135,7 +135,7 @@ class Rump < Thor
     end
   end
 
-  desc "init project", "initialise a repo of scaffolded Puppet manifests"
+  desc "init <project>", "initialise a repo of scaffolded Puppet manifests"
   def init(project)
     scaffold(project)
     repo_path = @root.join(project)
