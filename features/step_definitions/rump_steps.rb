@@ -95,6 +95,10 @@ Then /^I should see a file at "([^\"]*)"$/ do |path|
   File.exists?(path).should be_true
 end
 
+Then /^I should see a directory at "([^\"]*)"$/ do |path|
+  File.directory?(path).should be_true
+end
+
 Given /^there is no "([^\"]*)" file$/ do |file|
   FileUtils.rm_rf(file).should be_true
 end

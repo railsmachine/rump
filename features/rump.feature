@@ -108,6 +108,22 @@ Feature: Rump
     Then I should see a file at "/tmp/checkout"
 
   @online
+  Scenario: Automatically initialising frozen submodules on clone
+    Given I am working in "/tmp"
+    And I have a simple Puppet repository named "foobar"
+    And there is no "simple-puppet" repository
+    And there is no "frozen-puppet" repository
+    When I run "rump clone foobar simple-puppet"
+    Given I am working in "/tmp/simple-puppet"
+    When I run "rump freeze"
+    And I run "git add ."
+    And I run "git commit -m 'frozen puppet + facter' ."
+    Given I am working in "/tmp"
+    When I run "rump clone simple-puppet frozen-puppet"
+    Then I should see a directory at "/tmp/frozen-puppet/vendor/facter"
+    Then I should see a directory at "/tmp/frozen-puppet/vendor/puppet"
+
+  @online
   Scenario: Freezing a specific submodule
     Given I am working in "/tmp"
     And I have a simple Puppet repository named "foobar"

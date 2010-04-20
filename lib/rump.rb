@@ -25,8 +25,17 @@ class Rump < Thor
   desc "clone <repository> [directory]", "clone a Git repository of Puppet manifests"
   def clone(repository, directory=nil)
     abort_unless_git_installed
+    directory ||= File.basename(repository.split('/').last, '.git')
     command = "git clone -q #{repository} #{directory}"
     system(command)
+
+    # A cloned repo may have submodules - automatically initialise them.
+    if File.exists?(File.join(directory, '.gitmodules'))
+      Dir.chdir(directory) do 
+        system("git submodule init")
+        system("git submodule update")
+      end
+    end
   end
 
   desc "go [puppet arguments]", "do a local Puppet run"
@@ -83,6 +92,9 @@ class Rump < Thor
         exit(1) unless system(attrs[:command])
       end
     end
+
+    puts "Freezing complete."
+    puts "Make sure to run git add + git commit with the proper arguments to make the freeze permanent!"
   end
 
   desc "scaffold <project>", "generate scaffolding for a repository of Puppet manifests"
