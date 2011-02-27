@@ -100,10 +100,11 @@ class Rump < Thor
 
   desc "scaffold <project>", "generate scaffolding for a repository of Puppet manifests"
   def scaffold(project)
-    [ @root.join(project),
-      @root.join(project, 'manifests'),
-      @root.join(project, 'modules'),
-      @root.join(project, 'vendor') ].each do |directory|
+    [ @root + project,
+      @root + project + 'manifests',
+      @root + project + 'modules',
+      @root + project + 'var/reports',
+      @root + project + 'vendor' ].each do |directory|
       FileUtils.mkdir_p(directory)
     end
 
