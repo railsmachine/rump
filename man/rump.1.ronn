@@ -8,7 +8,7 @@ Rump
 ## SYNOPSIS ##
 
   * `rump` go [<puppet-options>]
-  * `rump` clone <repository>
+  * `rump` clone <repository> [directory]
   * `rump` freeze [<project> <repository> --release=<release>]
   * `rump` whoami [rfc2822-address]
   * `rump` init <project>
@@ -100,10 +100,10 @@ down to just Ruby and git.
 
 ## RETURN VALUES ##
 
-  * **0**: command completed successfully
-  * **1**: argument error
-  * **2**: subcommand error
-  * **3**: required frozen submodule doesn't exist
+  * **0**: Command completed successfully.
+  * **1**: Argument error.
+  * **2**: Subcommand error.
+  * **3**: Required frozen submodule doesn't exist.
 
 ## QUIRKS ##
 
@@ -146,7 +146,6 @@ Freeze Puppet and Facter:
     Receiving objects: 100% (4185/4185), 840.81 KiB | 174 KiB/s, done.
     Resolving deltas: 100% (2202/2202), done.
     Freezing complete.
-    Make sure to run git add + git commit with the proper arguments to make the freeze permanent!
 
 Freeze some other repository:
 
@@ -158,7 +157,6 @@ Freeze some other repository:
     Receiving objects: 100% (4122/4122), 543.59 KiB | 58 KiB/s, done.
     Resolving deltas: 100% (2190/2190), done.
     Freezing complete.
-    Make sure to run git add + git commit with the proper arguments to make the freeze permanent!
 
 Freeze Puppet at a particular version:
 
@@ -171,7 +169,6 @@ Freeze Puppet at a particular version:
     Resolving deltas: 100% (52640/52640), done.
     Switched to a new branch '2.6.2'
     Freezing complete.
-    Make sure to run git add + git commit with the proper arguments to make the freeze permanent!
 
 Do a Puppet run:
 
