@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby 
+#!/usr/bin/env ruby
 
 require 'thor'
 require 'pathname'
@@ -21,7 +21,7 @@ class Rump < Thor
     @root = Pathname.new(Dir.getwd)
     @install_root = Pathname.new(File.expand_path(File.join(File.dirname(__FILE__))))
   end
-    
+
   desc "clone <repository> [directory]", "clone a Git repository of Puppet manifests"
   def clone(repository, directory=nil)
     abort_unless_git_installed
@@ -31,7 +31,7 @@ class Rump < Thor
 
     # A cloned repo may have submodules - automatically initialise them.
     if File.exists?(File.join(directory, '.gitmodules'))
-      Dir.chdir(directory) do 
+      Dir.chdir(directory) do
         system("git submodule init")
         system("git submodule update")
       end
@@ -41,14 +41,14 @@ class Rump < Thor
   desc "go [puppet arguments]", "do a local Puppet run"
   def go(*puppet_args)
     if ENV['USER'] != "root"
-      puts "You should probably be root when running this! Proceeding anyway..." 
+      puts "You should probably be root when running this! Proceeding anyway..."
     end
-    
+
     args = []
     if has_frozen_components?
-      args << "ruby" 
+      args << "ruby"
       Dir.glob("#{@root.join('vendor')}/*").each do |dir|
-        args << "-I #{@root.join('vendor', dir, 'lib')}" 
+        args << "-I #{@root.join('vendor', dir, 'lib')}"
       end
       args << "#{@root.join('vendor', 'puppet', 'bin', 'puppet')}"
       puts "Using frozen Puppet from #{@root.join('vendor', 'puppet')}."
@@ -72,7 +72,7 @@ class Rump < Thor
   def freeze(*args)
     abort_unless_git_installed
 
-    commands = [] 
+    commands = []
     if args.size >= 2
       project    = args[0]
       repository = args[1]
@@ -112,32 +112,32 @@ class Rump < Thor
         #{"=" * project.size}==========
 
         modules/ <= Puppet modules
-        manifests/ <= Puppet nodes 
+        manifests/ <= Puppet nodes
         vendor/ <= frozen Puppet + Facter
 
         Running Puppet with Rump
         ------------------------
 
-        From within this directory, run: 
+        From within this directory, run:
 
             rump go
 
-        You can pass options to Puppet after the 'go': 
+        You can pass options to Puppet after the 'go':
 
-            rump go --debug --test 
+            rump go --debug --test
 
         Freezing Puppet
         ---------------
 
-        Firstly, you need to create a git repository: 
+        Firstly, you need to create a git repository:
 
-            git init 
+            git init
 
-        Now you can freeze Puppet: 
+        Now you can freeze Puppet:
 
-            rump freeze 
+            rump freeze
 
-        Once Rump has frozen Puppet, commit the changes: 
+        Once Rump has frozen Puppet, commit the changes:
 
             git commit -m 'added facter + puppet submodules' .
 
@@ -152,8 +152,8 @@ class Rump < Thor
     scaffold(project)
     repo_path = @root.join(project)
     template_path = @install_root.join('generators', 'git')
-   
-    Dir.chdir(repo_path) do 
+
+    Dir.chdir(repo_path) do
       command = "git init --template=#{template_path}"
       system(command)
     end
@@ -165,15 +165,15 @@ class Rump < Thor
     if address
       name  = address[/^(.+)\s+</, 1]
       email = address[/<(.+)>$/, 1]
-  
-      unless name && email 
-        abort("Supplied address isn't a valid rfc2822 email address") 
+
+      unless name && email
+        abort("Supplied address isn't a valid rfc2822 email address")
       end
-  
+
       system("git config user.name '#{name}'")
       system("git config user.email '#{email}'")
     # setter
-    else 
+    else
       name = `git config user.name`.strip
       email = `git config user.email`.strip
 
@@ -185,20 +185,20 @@ class Rump < Thor
     end
   end
 
-  private 
+  private
   def has_frozen_components?
     vendored = Dir.glob("#{@root.join('vendor')}/*").map {|v| v.split('/').last}
     vendored.include?("puppet") && vendored.include?("facter")
   end
 
-  # helper + abortive methods 
+  # helper + abortive methods
   %w(puppet git).each do |bin|
     class_eval <<-METHOD, __FILE__, __LINE__
-      no_tasks do 
+      no_tasks do
         def #{bin}_installed?
           `which #{bin}` =~ /#{bin}$/ ? true : false
         end
-  
+
         def abort_unless_#{bin}_installed(opts={})
           unless #{bin}_installed?
             puts "You don't have #{bin.capitalize} installed!"
