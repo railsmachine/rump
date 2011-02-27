@@ -82,8 +82,8 @@ class Rump < Thor
       end
 
     else
-      commands << { :command => "git submodule add git://github.com/reductivelabs/puppet.git #{@root.join('vendor', 'puppet')}" }
-      commands << { :command => "git submodule add git://github.com/reductivelabs/facter.git #{@root.join('vendor', 'facter')}" }
+      commands << { :command => "git submodule add git://github.com/puppetlabs/puppet.git #{@root.join('vendor', 'puppet')}" }
+      commands << { :command => "git submodule add git://github.com/puppetlabs/facter.git #{@root.join('vendor', 'facter')}" }
     end
 
     commands.each do |attrs|
