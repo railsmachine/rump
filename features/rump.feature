@@ -1,8 +1,8 @@
-Feature: Rump 
-  To iterate quickly 
+Feature: Rump
+  To iterate quickly
   When writing and running
   Puppet manifests
-  A user 
+  A user
   Should have a helper tool
   To smooth things out
 
@@ -27,14 +27,14 @@ Feature: Rump
     Then I should see a file at "/tmp/checkout"
 
   @offline
-  Scenario: Initialising a safe repo 
+  Scenario: Initialising a safe repo
     Given I am working in "/tmp"
     And there is no "safe-puppet" repository
     And there is no "/tmp/checkout" file
     When I run "rump init safe-puppet"
     Then I should have a git repository at "safe-puppet"
 
-  @offline 
+  @offline
   Scenario: Verifying author name
     Given I am working in "/tmp"
     And there is no "safe-puppet" repository
@@ -46,7 +46,7 @@ Feature: Rump
     When I run "git add ."
     Then running "GIT_AUTHOR_NAME=root git commit -m 'created random' ." should fail
 
-  @offline 
+  @offline
   Scenario: Verifying author email
     Given I am working in "/tmp"
     And there is no "safe-puppet" repository
@@ -58,7 +58,7 @@ Feature: Rump
     When I run "git add ."
     Then running "GIT_AUTHOR_EMAIL=me@$(hostname) git commit -m 'created random' ." should fail
 
-  @offline 
+  @offline
   Scenario: Setting author email
     Given I am working in "/tmp"
     And there is no "whoami-email-puppet" repository
@@ -71,7 +71,7 @@ Feature: Rump
     When I run "git add ."
     Then running "GIT_AUTHOR_EMAIL=$(git config user.email) git commit -m 'created random' ." should succeed
 
-  @offline 
+  @offline
   Scenario: Setting author name
     Given I am working in "/tmp"
     And there is no "whoami-name-puppet" repository
@@ -84,7 +84,7 @@ Feature: Rump
     When I run "git add ."
     Then running "GIT_AUTHOR_NAME=$(git config user.name) git commit -m 'created random' ." should succeed
 
-  @offline 
+  @offline
   Scenario: Getting author name and email
     Given I am working in "/tmp"
     And there is no "whoami-getter-puppet" repository
@@ -156,9 +156,9 @@ Feature: Rump
     Given I am working in "/tmp/"
     When I run "rump scaffold my-new-project"
     Given I am working in "/tmp/my-new-project"
-    Then I should see the following directories: 
+    Then I should see the following directories:
       | directory                     |
-      | /tmp/my-new-project           | 
+      | /tmp/my-new-project           |
       | /tmp/my-new-project/manifests |
       | /tmp/my-new-project/modules   |
       | /tmp/my-new-project/vendor    |
