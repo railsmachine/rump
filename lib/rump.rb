@@ -136,7 +136,7 @@ class Rump < Thor
       FileUtils.mkdir_p(directory)
     end
 
-    File.open(@root.join(project, 'README'), 'w') do |f|
+    File.open(@root.join(project, 'README.md'), 'w') do |f|
       f << <<-README.gsub(/^ {8}/, '')
         #{project} manifests
         #{"=" * project.size}==========
@@ -184,9 +184,15 @@ class Rump < Thor
     template_path = @install_root.join('generators', 'git')
 
     Dir.chdir(repo_path) do
-      command = "git init --template=#{template_path}"
-      system(command)
+      commands = [ "git init --quiet --template=#{template_path}",
+                   "git add .",
+                   "git commit --quiet -am 'Initial commit.'" ]
+      commands.each do |command|
+        system(command)
+      end
     end
+
+    info "Your new Rump project has been initialised in #{repo_path}"
   end
 
   desc "whoami [rfc2822-address]", "set the current commit author"
