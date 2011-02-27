@@ -4,7 +4,7 @@ Rump
 Rump helps you run Puppet locally against a Git checkout.
 
 This is great for locally iterating your Puppet manifests very quickly, then
-pushng them up to a repository somewhere else to share the changes.
+pushing them up to a repository somewhere else to share the changes.
 
 This also works well with a Capistrano-style deployment, where you remotely
 instruct Rump to check out a copy of the latest manifests and run them.
