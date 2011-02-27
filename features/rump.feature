@@ -131,8 +131,8 @@ Feature: Rump
     And there is no "/tmp/checkout" file
     When I run "rump clone foobar simple-puppet"
     Given I am working in "/tmp/simple-puppet"
-    When I run "rump freeze facter git://github.com/reductivelabs/facter.git"
-    And I run "rump freeze puppet git://github.com/reductivelabs/puppet.git"
+    When I run "rump freeze facter git://github.com/puppetlabs/facter.git"
+    And I run "rump freeze puppet git://github.com/puppetlabs/puppet.git"
     And I run "rump go"
     Then I should see a file at "/tmp/checkout"
 
@@ -144,8 +144,8 @@ Feature: Rump
     And there is no "/tmp/checkout" file
     When I run "rump clone foobar tagged-puppet"
     Given I am working in "/tmp/tagged-puppet"
-    When I run "rump freeze facter git://github.com/reductivelabs/facter.git --release=1.5.7"
-    And I run "rump freeze puppet git://github.com/reductivelabs/puppet.git --release=0.25.4"
+    When I run "rump freeze facter git://github.com/puppetlabs/facter.git --release=1.5.7"
+    And I run "rump freeze puppet git://github.com/puppetlabs/puppet.git --release=0.25.4"
     And I run "rump go"
     Then I should see a file at "/tmp/checkout"
 
