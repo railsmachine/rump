@@ -91,6 +91,28 @@ Given /^I have a simple Puppet repository named "([^\"]*)"$/ do |repo_name|
   File.exists?(repo_path.join('.git')).should be_true
 end
 
+Given /^I have a simple Puppet 2.6 repository named "([^"]*)"$/ do |repo_name|
+  repo_path = @basedir.join(repo_name)
+  simple_path = ROOT.join('features', 'support', 'repos', 'simple_26')
+  hostname = Socket.gethostname
+
+  FileUtils.rm_rf(repo_path)
+  FileUtils.cp_r(simple_path, repo_path)
+
+  File.open(repo_path.join('manifests', 'nodes', "#{hostname}.pp"), 'w') do |f|
+    f << "node #{hostname} { include 'test' }"
+  end
+
+  Dir.chdir(repo_path) do
+    commands = ["git init -q", "git add .", "git commit -qm 'init' ."]
+    commands.each do |command|
+      system(command).should be_true
+    end
+  end
+
+  File.exists?(repo_path.join('.git')).should be_true
+end
+
 Then /^I should see a file at "([^\"]*)"$/ do |path|
   File.exists?(path).should be_true
 end
