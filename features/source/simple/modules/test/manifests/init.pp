@@ -1,5 +1,5 @@
 class test {
-	file { "/tmp/checkout":
-		content => "checkout"
-	}
+  file { "/tmp/checkout":
+    content => "checkout"
+  }
 }
