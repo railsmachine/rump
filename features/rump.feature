@@ -149,7 +149,18 @@ Feature: Rump
     And I run "rump go"
     Then I should see a file at "/tmp/checkout"
 
-
+  @online
+  Scenario: Freezing and running Puppet 2.6
+    Given I am working in "/tmp"
+    And I have a simple Puppet 2.6 repository named "foobar"
+    And there is no "tagged-puppet" repository
+    And there is no "/tmp/checkout" file
+    When I run "rump clone foobar tagged-puppet"
+    Given I am working in "/tmp/tagged-puppet"
+    When I run "rump freeze facter git://github.com/puppetlabs/facter.git --release=1.5.8"
+    And I run "rump freeze puppet git://github.com/puppetlabs/puppet.git --release=2.6.4"
+    And I run "rump go"
+    Then I should see a file at "/tmp/checkout"
 
   @offline
   Scenario: Generating project scaffolding
