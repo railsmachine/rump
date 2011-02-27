@@ -78,7 +78,8 @@ class Rump < Thor
       repository = args[1]
       commands << { :command => "git submodule add #{repository} #{@root.join('vendor', project)}" }
       if args.detect { |arg| arg =~ /^--release\=(.+)/ }
-        commands << { :command => "git checkout #{$1}", :directory => @root.join('vendor', project) }
+        version = $1
+        commands << { :command => "git checkout -b #{version} #{version}", :directory => @root.join('vendor', project) }
       end
 
     else
