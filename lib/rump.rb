@@ -65,7 +65,7 @@ class Rump < Thor
 
     command = args.join(' ')
     puts command if args.include?("--debug")
-    system(command) ? exit(0) : exit(1)
+    system(command) ? exit(0) : exit(2)
   end
 
   desc "freeze [repository, project]", "freeze Puppet into your manifests repository"
@@ -90,7 +90,7 @@ class Rump < Thor
     commands.each do |attrs|
       dir = attrs[:directory] || @root
       Dir.chdir(dir) do
-        exit(1) unless system(attrs[:command])
+        exit(2) unless system(attrs[:command])
       end
     end
 
@@ -204,7 +204,7 @@ class Rump < Thor
           unless #{bin}_installed?
             puts "You don't have #{bin.capitalize} installed!"
             puts opts[:message] || "Please install it on your system."
-            exit 2
+            exit 3
           end
         end
       end
