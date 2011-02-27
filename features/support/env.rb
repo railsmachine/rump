@@ -1,6 +1,7 @@
-#!/usr/bin/env ruby 
+#!/usr/bin/env ruby
 
 require 'socket'
+require 'pathname'
 
 ROOT = Pathname.new(File.expand_path(File.join(File.dirname(__FILE__), '..', '..')))
 
