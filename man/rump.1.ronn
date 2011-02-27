@@ -1,0 +1,120 @@
+Rump
+====
+
+## NAME ##
+
+  rump - helps you run Puppet locally against a Git checkout
+
+## SYNOPSIS ##
+
+  * `rump` go [<puppet-options>]
+  * `rump` clone <repository>
+  * `rump` freeze [<project> <repository> --release=<release>]
+  * `rump` whoami [rfc2822-address]
+  * `rump` init <project>
+  * `rump` scaffold <project>
+
+## DESCRIPTION ##
+
+**Rump** helps you run Puppet locally against a Git checkout.
+
+This supports a Puppet workflow where you locally iterate your Puppet manifests
+to develop features very quickly, then push them up to a repository to share
+the changes across your infrastructure.
+
+This workflow also complements a Capistrano or MCollective-style deployment,
+where you remotely instruct Rump to check out a copy of the latest manifests
+and run them.
+
+## COMMANDS ##
+
+  * `clone`:
+    Clone a git repository of Puppet manifests.
+
+    <repository> is the url of a git repository. Essentially invokes
+    `git clone`. If [directory] is specified, will clone the repository into
+    the specified directory.
+
+  * `go`:
+    Do a Puppet run. Assumes the current directory is a repository of Puppet
+    manifests.
+
+    <puppet-options> are any options you can pass to `puppet` on the command
+    line (e.g. `--debug`, `--verbose`, `--tags foobar`).
+
+  * `freeze`:
+    Freeze an arbitrary git repository into the current git repository as a
+    submodule under `vendor/`.
+
+    With no arguments, `freeze` will freeze in Puppet + Facter, to the latest
+    commit. This is especially useful if you want to track the latest
+    development release of Puppet.
+
+    If <project> and <repository> are specified, a git repository is cloned
+    and set up as a submodule under `vendor/`.
+
+    If `--release` is specified, `freeze` will create and switch to a branch
+    matching a particular tag or revision. Use this to lock to a specific
+    version of Puppet.
+
+    Once the repository is frozen in, switch between tagged releases by `cd`ing
+    to the repository under vendor and running `git checkout <tag>`.
+
+    Any repository frozen under `vendor/` will be added to the Puppet load path
+    when using `rump go`.
+
+  * `init`:
+    Initialise a repo of scaffolded Puppet manifests. Generates scaffolding for
+    a repository of Puppet manifests, and `git init`s the repository.
+
+  * `scaffold`:
+    Generate scaffolding for a repository of Puppet manifests, primed for Rump.
+
+    Called by `init`. You should never have to call this manually.
+
+  * `whoami`:
+    Sets `user.name` and `user.email` using `git config`. Useful if you have
+    multiple users working with the repository from the same UNIX account.
+
+    If no arguments are specified, will output the currently configured name
+    and email.
+
+    If an argument is specified, treat the argument as an RFC2822 formatted
+    email address, e.g. John Doe <john@example.org>. Sets `user.name` and
+    `user.email` with `git config`.
+
+    Modelled on `bzr whoami`.
+
+  * `help`:
+    Display the man page.
+
+## OPTIONS
+
+  * `--help|-h`:
+    Display the man page.
+
+## RETURN VALUES ##
+
+  * **0**: command completed successfully
+  * **1**: argument error
+  * **2**: subcommand error
+  * **3**: required frozen submodule doesn't exist
+
+
+## QUIRKS ##
+
+1. Puppet's fileserver (`source => "puppet:///..."` on File resources) doesn't
+   behave as expected on Puppet < 2.6. If you are using Puppet < 2.6, all files
+   need to be templates.
+
+## AUTHOR ##
+
+Lindsay Holmwood <lindsay@holmwood.id.au>
+
+## COPYRIGHT ##
+
+Rump is copyright Rails Machine LLC.
+
+## SEE ALSO ##
+
+puppet(8)

@@ -6,9 +6,12 @@ Given /^I have an empty git repository named "([^\"]*)"$/ do |repo_name|
   repo_path = @basedir.join(repo_name)
   FileUtils.rm_rf(repo_path)
   FileUtils.mkdir_p(repo_path)
-  
-  Dir.chdir(repo_path) do 
-    commands = ["git init -q", "touch foo", "git add foo", "git commit -qm 'init' ."]
+
+  Dir.chdir(repo_path) do
+    commands = [ "git init -q",
+                 "touch foo",
+                 "git add foo",
+                 "git commit -qm 'init' ." ]
     commands.each do |command|
       system(command).should be_true
     end
@@ -27,19 +30,19 @@ When /^I run "([^\"]*)"$/ do |cmd|
     command = cmd
   end
 
-  Dir.chdir(@basedir) do 
+  Dir.chdir(@basedir) do
     system(command).should be_true
   end
 end
 
 Then /^running "([^\"]*)" should fail$/ do |command|
-  Dir.chdir(@basedir) do 
+  Dir.chdir(@basedir) do
     system(command).should be_false
   end
 end
 
 Then /^running "([^\"]*)" should succeed$/ do |command|
-  Dir.chdir(@basedir) do 
+  Dir.chdir(@basedir) do
     system(command).should be_true
   end
 end
@@ -54,7 +57,7 @@ Then /^running "([^\"]*)" should output "([^\"]*)"$/ do |cmd, string|
     command = cmd
   end
 
-  Dir.chdir(@basedir) do 
+  Dir.chdir(@basedir) do
     (`#{command}` =~ /#{string}/).should be_true
   end
 end
@@ -71,8 +74,8 @@ end
 
 Given /^I have a simple Puppet repository named "([^\"]*)"$/ do |repo_name|
   repo_path = @basedir.join(repo_name)
-  simple_path = ROOT.join('features', 'source', 'simple')
-  hostname = Socket.gethostname
+  simple_path = ROOT.join('features', 'support', 'repos', 'simple')
+  hostname = Socket.gethostname.split('.').first
 
   FileUtils.rm_rf(repo_path)
   FileUtils.cp_r(simple_path, repo_path)
@@ -80,8 +83,30 @@ Given /^I have a simple Puppet repository named "([^\"]*)"$/ do |repo_name|
   File.open(repo_path.join('manifests', 'nodes', "#{hostname}.pp"), 'w') do |f|
     f << "node #{hostname} { include 'test' }"
   end
-  
-  Dir.chdir(repo_path) do 
+
+  Dir.chdir(repo_path) do
+    commands = ["git init -q", "git add .", "git commit -qm 'init' ."]
+    commands.each do |command|
+      system(command).should be_true
+    end
+  end
+
+  File.exists?(repo_path.join('.git')).should be_true
+end
+
+Given /^I have a simple Puppet 2.6 repository named "([^"]*)"$/ do |repo_name|
+  repo_path = @basedir.join(repo_name)
+  simple_path = ROOT.join('features', 'support', 'repos', 'simple_26')
+  hostname = Socket.gethostname.split('.').first
+
+  FileUtils.rm_rf(repo_path)
+  FileUtils.cp_r(simple_path, repo_path)
+
+  File.open(repo_path.join('manifests', 'nodes', "#{hostname}.pp"), 'w') do |f|
+    f << "node #{hostname} { include 'test' }"
+  end
+
+  Dir.chdir(repo_path) do
     commands = ["git init -q", "git add .", "git commit -qm 'init' ."]
     commands.each do |command|
       system(command).should be_true

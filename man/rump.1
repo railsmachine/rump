@@ -1,0 +1,139 @@
+.\" generated with Ronn/v0.7.3
+.\" http://github.com/rtomayko/ronn/tree/0.7.3
+.
+.TH "RUMP" "1" "February 2011" "" ""
+.
+.SH "NAME"
+rump \- helps you run Puppet locally against a Git checkout
+.
+.SH "SYNOPSIS"
+.
+.IP "\(bu" 4
+\fBrump\fR go [\fIpuppet\-options\fR]
+.
+.IP "\(bu" 4
+\fBrump\fR clone \fIrepository\fR
+.
+.IP "\(bu" 4
+\fBrump\fR freeze [\fIproject\fR \fIrepository\fR \-\-release=\fIrelease\fR]
+.
+.IP "\(bu" 4
+\fBrump\fR whoami [rfc2822\-address]
+.
+.IP "\(bu" 4
+\fBrump\fR init \fIproject\fR
+.
+.IP "\(bu" 4
+\fBrump\fR scaffold \fIproject\fR
+.
+.IP "" 0
+.
+.SH "DESCRIPTION"
+\fBRump\fR helps you run Puppet locally against a Git checkout\.
+.
+.P
+This is great for locally iterating your Puppet manifests very quickly, then pushing them up to a repository somewhere else to share the changes\.
+.
+.P
+This also works well with a Capistrano\-style deployment, where you remotely instruct Rump to check out a copy of the latest manifests and run them\.
+.
+.SH "COMMANDS"
+.
+.TP
+\fBclone\fR
+Clone a git repository of Puppet manifests\.
+.
+.IP
+\fIrepository\fR is the url of a git repository\. Essentially invokes \fBgit clone\fR\. If [directory] is specified, will clone the repository into the specified directory\.
+.
+.TP
+\fBgo\fR
+Do a Puppet run\. Assumes the current directory is a repository of Puppet manifests\.
+.
+.IP
+\fIpuppet\-options\fR are any options you can pass to \fBpuppet\fR on the command line (e\.g\. \fB\-\-debug\fR, \fB\-\-verbose\fR, \fB\-\-tags foobar\fR)\.
+.
+.TP
+\fBfreeze\fR
+Freeze an arbitrary git repository into the current git repository as a submodule under \fBvendor/\fR\.
+.
+.IP
+With no arguments, \fBfreeze\fR will freeze in Puppet + Facter, to the latest commit\. This is especially useful if you want to track the latest development release of Puppet\.
+.
+.IP
+If \fIproject\fR and \fIrepository\fR are specified, a git repository is cloned and set up as a submodule under \fBvendor/\fR\.
+.
+.IP
+If \fB\-\-release\fR is specified, \fBfreeze\fR will create and switch to a branch matching a particular tag or revision\. Use this to lock to a specific version of Puppet\.
+.
+.IP
+Once the repository is frozen in, switch between tagged releases by \fBcd\fRing to the repository under vendor and running \fBgit checkout <tag>\fR\.
+.
+.IP
+Any repository frozen under \fBvendor/\fR will be added to the Puppet load path when using \fBrump go\fR\.
+.
+.TP
+\fBinit\fR
+Initialise a repo of scaffolded Puppet manifests\. Generates scaffolding for a repository of Puppet manifests, and \fBgit init\fRs the repository\.
+.
+.TP
+\fBscaffold\fR
+Generate scaffolding for a repository of Puppet manifests, primed for Rump\.
+.
+.IP
+Called by \fBinit\fR\. You should never have to call this manually\.
+.
+.TP
+\fBwhoami\fR
+Sets \fBuser\.name\fR and \fBuser\.email\fR using \fBgit config\fR\. Useful if you have multiple users working with the repository from the same UNIX account\.
+.
+.IP
+If no arguments are specified, will output the currently configured name and email\.
+.
+.IP
+If an argument is specified, treat the argument as an RFC2822 formatted email address, e\.g\. John Doe \fIjohn@example\.org\fR\. Sets \fBuser\.name\fR and \fBuser\.email\fR with \fBgit config\fR\.
+.
+.IP
+Modelled on \fBbzr whoami\fR\.
+.
+.TP
+\fBhelp\fR
+Display the man page\.
+.
+.SH "OPTIONS"
+.
+.TP
+\fB\-\-help|\-h\fR
+Display the man page\.
+.
+.SH "RETURN VALUES"
+.
+.IP "\(bu" 4
+\fB0\fR: command completed successfully
+.
+.IP "\(bu" 4
+\fB1\fR: argument error
+.
+.IP "\(bu" 4
+\fB2\fR: subcommand error
+.
+.IP "\(bu" 4
+\fB3\fR: required frozen submodule doesn\'t exist
+.
+.IP "" 0
+.
+.SH "QUIRKS"
+.
+.IP "1." 4
+Puppet\'s fileserver (\fBsource => "puppet:///\.\.\."\fR on File resources) doesn\'t behave as expected on Puppet < 2\.6\. If you are using Puppet < 2\.6, all files need to be templates\.
+.
+.IP "" 0
+.
+.SH "AUTHOR"
+Lindsay Holmwood \fIlindsay@holmwood\.id\.au\fR
+.
+.SH "COPYRIGHT"
+Rump is copyright Rails Machine LLC\.
+.
+.SH "SEE ALSO"
+puppet(8)

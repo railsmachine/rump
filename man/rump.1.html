@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv='content-type' value='text/html;charset=utf8'>
+  <meta name='generator' value='Ronn/v0.7.3 (http://github.com/rtomayko/ronn/tree/0.7.3)'>
+  <title>rump(1) - Rump</title>
+  <style type='text/css' media='all'>
+  /* style: man */
+  body#manpage {margin:0}
+  .mp {max-width:100ex;padding:0 9ex 1ex 4ex}
+  .mp p,.mp pre,.mp ul,.mp ol,.mp dl {margin:0 0 20px 0}
+  .mp h2 {margin:10px 0 0 0}
+  .mp > p,.mp > pre,.mp > ul,.mp > ol,.mp > dl {margin-left:8ex}
+  .mp h3 {margin:0 0 0 4ex}
+  .mp dt {margin:0;clear:left}
+  .mp dt.flush {float:left;width:8ex}
+  .mp dd {margin:0 0 0 9ex}
+  .mp h1,.mp h2,.mp h3,.mp h4 {clear:left}
+  .mp pre {margin-bottom:20px}
+  .mp pre+h2,.mp pre+h3 {margin-top:22px}
+  .mp h2+pre,.mp h3+pre {margin-top:5px}
+  .mp img {display:block;margin:auto}
+  .mp h1.man-title {display:none}
+  .mp,.mp code,.mp pre,.mp tt,.mp kbd,.mp samp,.mp h3,.mp h4 {font-family:monospace;font-size:14px;line-height:1.42857142857143}
+  .mp h2 {font-size:16px;line-height:1.25}
+  .mp h1 {font-size:20px;line-height:2}
+  .mp {text-align:justify;background:#fff}
+  .mp,.mp code,.mp pre,.mp pre code,.mp tt,.mp kbd,.mp samp {color:#131211}
+  .mp h1,.mp h2,.mp h3,.mp h4 {color:#030201}
+  .mp u {text-decoration:underline}
+  .mp code,.mp strong,.mp b {font-weight:bold;color:#131211}
+  .mp em,.mp var {font-style:italic;color:#232221;text-decoration:none}
+  .mp a,.mp a:link,.mp a:hover,.mp a code,.mp a pre,.mp a tt,.mp a kbd,.mp a samp {color:#0000ff}
+  .mp b.man-ref {font-weight:normal;color:#434241}
+  .mp pre {padding:0 4ex}
+  .mp pre code {font-weight:normal;color:#434241}
+  .mp h2+pre,h3+pre {padding-left:0}
+  ol.man-decor,ol.man-decor li {margin:3px 0 10px 0;padding:0;float:left;width:33%;list-style-type:none;text-transform:uppercase;color:#999;letter-spacing:1px}
+  ol.man-decor {width:100%}
+  ol.man-decor li.tl {text-align:left}
+  ol.man-decor li.tc {text-align:center;letter-spacing:4px}
+  ol.man-decor li.tr {text-align:right;float:right}
+  </style>
+</head>
+<!--
+  The following styles are deprecated and will be removed at some point:
+  div#man, div#man ol.man, div#man ol.head, div#man ol.man.
+
+  The .man-page, .man-decor, .man-head, .man-foot, .man-title, and
+  .man-navigation should be used instead.
+-->
+<body id='manpage'>
+  <div class='mp' id='man'>
+
+  <div class='man-navigation' style='display:none'>
+    <a href="#NAME">NAME</a>
+    <a href="#SYNOPSIS">SYNOPSIS</a>
+    <a href="#DESCRIPTION">DESCRIPTION</a>
+    <a href="#COMMANDS">COMMANDS</a>
+    <a href="#OPTIONS">OPTIONS</a>
+    <a href="#RETURN-VALUES">RETURN VALUES</a>
+    <a href="#QUIRKS">QUIRKS</a>
+    <a href="#AUTHOR">AUTHOR</a>
+    <a href="#COPYRIGHT">COPYRIGHT</a>
+    <a href="#SEE-ALSO">SEE ALSO</a>
+  </div>
+
+  <ol class='man-decor man-head man head'>
+    <li class='tl'>rump(1)</li>
+    <li class='tc'></li>
+    <li class='tr'>rump(1)</li>
+  </ol>
+
+  <h1>Rump</h1>
+<h2 id="NAME">NAME</h2>
+
+<p>  rump - helps you run Puppet locally against a Git checkout</p>
+
+<h2 id="SYNOPSIS">SYNOPSIS</h2>
+
+<ul>
+<li><code>rump</code> go [<var>puppet-options</var>]</li>
+<li><code>rump</code> clone <var>repository</var></li>
+<li><code>rump</code> freeze [<var>project</var> <var>repository</var> --release=<var>release</var>]</li>
+<li><code>rump</code> whoami [rfc2822-address]</li>
+<li><code>rump</code> init <var>project</var></li>
+<li><code>rump</code> scaffold <var>project</var></li>
+</ul>
+
+
+<h2 id="DESCRIPTION">DESCRIPTION</h2>
+
+<p><strong>Rump</strong> helps you run Puppet locally against a Git checkout.</p>
+
+<p>This is great for locally iterating your Puppet manifests very quickly, then
+pushing them up to a repository somewhere else to share the changes.</p>
+
+<p>This also works well with a Capistrano-style deployment, where you remotely
+instruct Rump to check out a copy of the latest manifests and run them.</p>
+
+<h2 id="COMMANDS">COMMANDS</h2>
+
+<dl>
+<dt class="flush"><code>clone</code></dt><dd><p>Clone a git repository of Puppet manifests.</p>
+
+<p><var>repository</var> is the url of a git repository. Essentially invokes
+<code>git clone</code>. If [directory] is specified, will clone the repository into
+the specified directory.</p></dd>
+<dt class="flush"><code>go</code></dt><dd><p>Do a Puppet run. Assumes the current directory is a repository of Puppet
+manifests.</p>
+
+<p><var>puppet-options</var> are any options you can pass to <code>puppet</code> on the command
+line (e.g. <code>--debug</code>, <code>--verbose</code>, <code>--tags foobar</code>).</p></dd>
+<dt class="flush"><code>freeze</code></dt><dd><p>Freeze an arbitrary git repository into the current git repository as a
+submodule under <code>vendor/</code>.</p>
+
+<p>With no arguments, <code>freeze</code> will freeze in Puppet + Facter, to the latest
+commit. This is especially useful if you want to track the latest
+development release of Puppet.</p>
+
+<p>If <var>project</var> and <var>repository</var> are specified, a git repository is cloned
+and set up as a submodule under <code>vendor/</code>.</p>
+
+<p>If <code>--release</code> is specified, <code>freeze</code> will create and switch to a branch
+matching a particular tag or revision. Use this to lock to a specific
+version of Puppet.</p>
+
+<p>Once the repository is frozen in, switch between tagged releases by <code>cd</code>ing
+to the repository under vendor and running <code>git checkout &lt;tag></code>.</p>
+
+<p>Any repository frozen under <code>vendor/</code> will be added to the Puppet load path
+when using <code>rump go</code>.</p></dd>
+<dt class="flush"><code>init</code></dt><dd><p>Initialise a repo of scaffolded Puppet manifests. Generates scaffolding for
+a repository of Puppet manifests, and <code>git init</code>s the repository.</p></dd>
+<dt><code>scaffold</code></dt><dd><p>Generate scaffolding for a repository of Puppet manifests, primed for Rump.</p>
+
+<p>Called by <code>init</code>. You should never have to call this manually.</p></dd>
+<dt class="flush"><code>whoami</code></dt><dd><p>Sets <code>user.name</code> and <code>user.email</code> using <code>git config</code>. Useful if you have
+multiple users working with the repository from the same UNIX account.</p>
+
+<p>If no arguments are specified, will output the currently configured name
+and email.</p>
+
+<p>If an argument is specified, treat the argument as an RFC2822 formatted
+email address, e.g. John Doe <a href="&#x6d;&#97;&#x69;&#108;&#116;&#x6f;&#x3a;&#106;&#x6f;&#104;&#110;&#x40;&#101;&#120;&#97;&#x6d;&#x70;&#x6c;&#x65;&#46;&#x6f;&#x72;&#103;" data-bare-link="true">&#106;&#111;&#104;&#x6e;&#x40;&#101;&#120;&#x61;&#109;&#112;&#108;&#101;&#46;&#x6f;&#x72;&#103;</a>. Sets <code>user.name</code> and
+<code>user.email</code> with <code>git config</code>.</p>
+
+<p>Modelled on <code>bzr whoami</code>.</p></dd>
+<dt class="flush"><code>help</code></dt><dd><p>Display the man page.</p></dd>
+</dl>
+
+
+<h2 id="OPTIONS">OPTIONS</h2>
+
+<dl>
+<dt><code>--help|-h</code></dt><dd>Display the man page.</dd>
+</dl>
+
+
+<h2 id="RETURN-VALUES">RETURN VALUES</h2>
+
+<ul>
+<li><strong>0</strong>: command completed successfully</li>
+<li><strong>1</strong>: argument error</li>
+<li><strong>2</strong>: subcommand error</li>
+<li><strong>3</strong>: required frozen submodule doesn't exist</li>
+</ul>
+
+
+<h2 id="QUIRKS">QUIRKS</h2>
+
+<ol>
+<li>Puppet's fileserver (<code>source =&gt; "puppet:///..."</code> on File resources) doesn't
+behave as expected on Puppet &lt; 2.6. If you are using Puppet &lt; 2.6, all files
+need to be templates.</li>
+</ol>
+
+
+<h2 id="AUTHOR">AUTHOR</h2>
+
+<p>Lindsay Holmwood <a href="&#x6d;&#x61;&#x69;&#108;&#116;&#x6f;&#x3a;&#x6c;&#x69;&#110;&#100;&#x73;&#x61;&#121;&#x40;&#104;&#111;&#x6c;&#x6d;&#x77;&#111;&#x6f;&#100;&#46;&#x69;&#x64;&#46;&#x61;&#117;" data-bare-link="true">&#108;&#x69;&#x6e;&#x64;&#115;&#97;&#x79;&#64;&#x68;&#111;&#x6c;&#x6d;&#x77;&#111;&#x6f;&#x64;&#x2e;&#x69;&#x64;&#x2e;&#97;&#x75;</a></p>
+
+<h2 id="COPYRIGHT">COPYRIGHT</h2>
+
+<p>Rump is copyright Rails Machine LLC.</p>
+
+<h2 id="SEE-ALSO">SEE ALSO</h2>
+
+<p><span class="man-ref">puppet<span class="s">(8)</span></span></p>
+
+
+  <ol class='man-decor man-foot man foot'>
+    <li class='tl'></li>
+    <li class='tc'>February 2011</li>
+    <li class='tr'>rump(1)</li>
+  </ol>
+
+  </div>
+</body>
+</html>
