@@ -4,7 +4,7 @@
 .TH "RUMP" "1" "February 2011" "" ""
 .
 .SH "NAME"
-rump \- helps you run Puppet locally against a Git checkout
+rump \- Do Puppet runs locally from a Git checkout
 .
 .SH "SYNOPSIS"
 .
@@ -12,7 +12,7 @@ rump \- helps you run Puppet locally against a Git checkout
 \fBrump\fR go [\fIpuppet\-options\fR]
 .
 .IP "\(bu" 4
-\fBrump\fR clone \fIrepository\fR
+\fBrump\fR clone \fIrepository\fR [directory]
 .
 .IP "\(bu" 4
 \fBrump\fR freeze [\fIproject\fR \fIrepository\fR \-\-release=\fIrelease\fR]
@@ -32,10 +32,13 @@ rump \- helps you run Puppet locally against a Git checkout
 \fBRump\fR helps you run Puppet locally against a Git checkout\.
 .
 .P
-This is great for locally iterating your Puppet manifests very quickly, then pushing them up to a repository somewhere else to share the changes\.
+Rump supports a Puppet workflow where you quickly + iteratively develop your Puppet manifests on a single machine, then push your changes up to a repository to deploy to the rest of your infrastructure\.
 .
 .P
-This also works well with a Capistrano\-style deployment, where you remotely instruct Rump to check out a copy of the latest manifests and run them\.
+This workflow also complements a Capistrano or MCollective\-style deployment, where you remotely instruct Rump to check out a copy of the latest manifests and run them\.
+.
+.P
+Rump also has the ability to freeze Puppet in to the manifests repository, letting you quickly test different versions of Puppet without waiting for packages to appear, and reducing the dependencies on a system to run Puppet down to just Ruby and git\.
 .
 .SH "COMMANDS"
 .
@@ -47,18 +50,11 @@ Clone a git repository of Puppet manifests\.
 \fIrepository\fR is the url of a git repository\. Essentially invokes \fBgit clone\fR\. If [directory] is specified, will clone the repository into the specified directory\.
 .
 .TP
-\fBgo\fR
-Do a Puppet run\. Assumes the current directory is a repository of Puppet manifests\.
-.
-.IP
-\fIpuppet\-options\fR are any options you can pass to \fBpuppet\fR on the command line (e\.g\. \fB\-\-debug\fR, \fB\-\-verbose\fR, \fB\-\-tags foobar\fR)\.
-.
-.TP
 \fBfreeze\fR
 Freeze an arbitrary git repository into the current git repository as a submodule under \fBvendor/\fR\.
 .
 .IP
-With no arguments, \fBfreeze\fR will freeze in Puppet + Facter, to the latest commit\. This is especially useful if you want to track the latest development release of Puppet\.
+With no arguments, \fBfreeze\fR will freeze in Puppet + Facter, to the latest commit on master\. This is especially useful if you want to track the latest development release of Puppet\.
 .
 .IP
 If \fIproject\fR and \fIrepository\fR are specified, a git repository is cloned and set up as a submodule under \fBvendor/\fR\.
@@ -71,6 +67,17 @@ Once the repository is frozen in, switch between tagged releases by \fBcd\fRing 
 .
 .IP
 Any repository frozen under \fBvendor/\fR will be added to the Puppet load path when using \fBrump go\fR\.
+.
+.TP
+\fBgo\fR
+Do a Puppet run\. Assumes the current directory is a repository of Puppet manifests\.
+.
+.IP
+\fIpuppet\-options\fR are any options you can pass to \fBpuppet\fR on the command line (e\.g\. \fB\-\-debug\fR, \fB\-\-verbose\fR, \fB\-\-tags foobar\fR)\.
+.
+.TP
+\fBhelp\fR
+Display the man page\.
 .
 .TP
 \fBinit\fR
@@ -96,10 +103,6 @@ If an argument is specified, treat the argument as an RFC2822 formatted email ad
 .IP
 Modelled on \fBbzr whoami\fR\.
 .
-.TP
-\fBhelp\fR
-Display the man page\.
-.
 .SH "OPTIONS"
 .
 .TP
@@ -109,16 +112,16 @@ Display the man page\.
 .SH "RETURN VALUES"
 .
 .IP "\(bu" 4
-\fB0\fR: command completed successfully
+\fB0\fR: Command completed successfully\.
 .
 .IP "\(bu" 4
-\fB1\fR: argument error
+\fB1\fR: Argument error\.
 .
 .IP "\(bu" 4
-\fB2\fR: subcommand error
+\fB2\fR: Subcommand error\.
 .
 .IP "\(bu" 4
-\fB3\fR: required frozen submodule doesn\'t exist
+\fB3\fR: Required frozen submodule doesn\'t exist\.
 .
 .IP "" 0
 .
@@ -126,6 +129,192 @@ Display the man page\.
 .
 .IP "1." 4
 Puppet\'s fileserver (\fBsource => "puppet:///\.\.\."\fR on File resources) doesn\'t behave as expected on Puppet < 2\.6\. If you are using Puppet < 2\.6, all files need to be templates\.
+.
+.IP "" 0
+.
+.SH "EXAMPLES"
+Initialise a Rump\-ready Puppet repository:
+.
+.IP "" 4
+.
+.nf
+
+$ rump init barfoo
+Initialized empty Git repository in barfoo/\.git/
+.
+.fi
+.
+.IP "" 0
+.
+.P
+Clone a git repository of Puppet manifests:
+.
+.IP "" 4
+.
+.nf
+
+$ rump clone git@github\.com:exampledotorg/manifests\.git
+.
+.fi
+.
+.IP "" 0
+.
+.P
+Clone a git repository of Puppet manifests into a specific directory:
+.
+.IP "" 4
+.
+.nf
+
+$ rump clone git@github\.com:exampledotorg/manifests\.git another_clone
+.
+.fi
+.
+.IP "" 0
+.
+.P
+Graft a Rump scaffold onto an existing repository of manifests:
+.
+.IP "" 4
+.
+.nf
+
+$ rump scaffold another_clone
+.
+.fi
+.
+.IP "" 0
+.
+.P
+Freeze Puppet and Facter:
+.
+.IP "" 4
+.
+.nf
+
+$ rump freeze
+Cloning into vendor/puppet\.\.\.
+remote: Counting objects: 72007, done\.
+remote: Compressing objects: 100% (22120/22120), done\.
+remote: Total 72007 (delta 52640), reused 66470 (delta 48322)
+Receiving objects: 100% (72007/72007), 12\.13 MiB | 253 KiB/s, done\.
+Resolving deltas: 100% (52640/52640), done\.
+Cloning into vendor/facter\.\.\.
+remote: Counting objects: 4185, done\.
+remote: Compressing objects: 100% (1930/1930), done\.
+remote: Total 4185 (delta 2202), reused 3973 (delta 2095)
+Receiving objects: 100% (4185/4185), 840\.81 KiB | 174 KiB/s, done\.
+Resolving deltas: 100% (2202/2202), done\.
+Freezing complete\.
+.
+.fi
+.
+.IP "" 0
+.
+.P
+Freeze some other repository:
+.
+.IP "" 4
+.
+.nf
+
+$ rump freeze moonshine https://github\.com/railsmachine/moonshine\.git
+Cloning into vendor/moonshine\.\.\.
+remote: Counting objects: 4122, done\.
+remote: Compressing objects: 100% (1976/1976), done\.
+remote: Total 4122 (delta 2190), reused 3730 (delta 1911)
+Receiving objects: 100% (4122/4122), 543\.59 KiB | 58 KiB/s, done\.
+Resolving deltas: 100% (2190/2190), done\.
+Freezing complete\.
+.
+.fi
+.
+.IP "" 0
+.
+.P
+Freeze Puppet at a particular version:
+.
+.IP "" 4
+.
+.nf
+
+$ rump freeze puppet git://github\.com/puppetlabs/puppet\.git \-\-release=2\.6\.2
+Cloning into /Users/auxesis/foobar/vendor/puppet\.\.\.
+remote: Counting objects: 72007, done\.
+remote: Compressing objects: 100% (22120/22120), done\.
+remote: Total 72007 (delta 52640), reused 66470 (delta 48322)
+Receiving objects: 100% (72007/72007), 12\.13 MiB | 238 KiB/s, done\.
+Resolving deltas: 100% (52640/52640), done\.
+Switched to a new branch \'2\.6\.2\'
+Freezing complete\.
+.
+.fi
+.
+.IP "" 0
+.
+.P
+Do a Puppet run:
+.
+.IP "" 4
+.
+.nf
+
+$ rump go
+You should probably be root when running this! Proceeding anyway\.\.\.
+Using frozen Puppet from vendor/puppet\.
+notice: Finished catalog run in 0\.01 seconds
+.
+.fi
+.
+.IP "" 0
+.
+.P
+Do a Puppet run, and pass in arguments to Puppet:
+.
+.IP "" 4
+.
+.nf
+
+$ rump go \-\-noop \-\-debug
+You should probably be root when running this! Proceeding anyway\.\.\.
+Using frozen Puppet from vendor/puppet\.
+ruby \-I vendor/facter/lib \-I vendor/puppet/lib vendor/puppet/bin/puppet
+\-\-modulepath modules \-\-confdir etc \-\-vardir var manifests/site\.pp \-\-noop \-\-debug
+debug: Creating default schedules
+debug: Failed to load library \'selinux\' for feature \'selinux\'
+debug: Puppet::Type::File::ProviderMicrosoft_windows: feature microsoft_windows is missing
+debug: Failed to load library \'ldap\' for feature \'ldap\'
+debug: Failed to load library \'shadow\' for feature \'libshadow\'
+\.\.\.
+.
+.fi
+.
+.IP "" 0
+.
+.P
+Find out who the currently configured git user is:
+.
+.IP "" 4
+.
+.nf
+
+$ rump whoami
+Jane Doe <jane@example\.org>
+.
+.fi
+.
+.IP "" 0
+.
+.P
+Set the git user:
+.
+.IP "" 4
+.
+.nf
+
+$ rump whoami \'John Doe <john@example\.org>\'
+.
+.fi
 .
 .IP "" 0
 .

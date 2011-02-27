@@ -60,6 +60,7 @@
     <a href="#OPTIONS">OPTIONS</a>
     <a href="#RETURN-VALUES">RETURN VALUES</a>
     <a href="#QUIRKS">QUIRKS</a>
+    <a href="#EXAMPLES">EXAMPLES</a>
     <a href="#AUTHOR">AUTHOR</a>
     <a href="#COPYRIGHT">COPYRIGHT</a>
     <a href="#SEE-ALSO">SEE ALSO</a>
@@ -74,13 +75,13 @@
   <h1>Rump</h1>
 <h2 id="NAME">NAME</h2>
 
-<p>  rump - helps you run Puppet locally against a Git checkout</p>
+<p>  rump - Do Puppet runs locally from a Git checkout</p>
 
 <h2 id="SYNOPSIS">SYNOPSIS</h2>
 
 <ul>
 <li><code>rump</code> go [<var>puppet-options</var>]</li>
-<li><code>rump</code> clone <var>repository</var></li>
+<li><code>rump</code> clone <var>repository</var> [directory]</li>
 <li><code>rump</code> freeze [<var>project</var> <var>repository</var> --release=<var>release</var>]</li>
 <li><code>rump</code> whoami [rfc2822-address]</li>
 <li><code>rump</code> init <var>project</var></li>
@@ -92,11 +93,18 @@
 
 <p><strong>Rump</strong> helps you run Puppet locally against a Git checkout.</p>
 
-<p>This is great for locally iterating your Puppet manifests very quickly, then
-pushing them up to a repository somewhere else to share the changes.</p>
+<p>Rump supports a Puppet workflow where you quickly + iteratively develop your
+Puppet manifests on a single machine, then push your changes up to a repository
+to deploy to the rest of your infrastructure.</p>
 
-<p>This also works well with a Capistrano-style deployment, where you remotely
-instruct Rump to check out a copy of the latest manifests and run them.</p>
+<p>This workflow also complements a Capistrano or MCollective-style deployment,
+where you remotely instruct Rump to check out a copy of the latest manifests
+and run them.</p>
+
+<p>Rump also has the ability to freeze Puppet in to the manifests repository,
+letting you quickly test different versions of Puppet without waiting for
+packages to appear, and reducing the dependencies on a system to run Puppet
+down to just Ruby and git.</p>
 
 <h2 id="COMMANDS">COMMANDS</h2>
 
@@ -106,16 +114,11 @@ instruct Rump to check out a copy of the latest manifests and run them.</p>
 <p><var>repository</var> is the url of a git repository. Essentially invokes
 <code>git clone</code>. If [directory] is specified, will clone the repository into
 the specified directory.</p></dd>
-<dt class="flush"><code>go</code></dt><dd><p>Do a Puppet run. Assumes the current directory is a repository of Puppet
-manifests.</p>
-
-<p><var>puppet-options</var> are any options you can pass to <code>puppet</code> on the command
-line (e.g. <code>--debug</code>, <code>--verbose</code>, <code>--tags foobar</code>).</p></dd>
 <dt class="flush"><code>freeze</code></dt><dd><p>Freeze an arbitrary git repository into the current git repository as a
 submodule under <code>vendor/</code>.</p>
 
 <p>With no arguments, <code>freeze</code> will freeze in Puppet + Facter, to the latest
-commit. This is especially useful if you want to track the latest
+commit on master. This is especially useful if you want to track the latest
 development release of Puppet.</p>
 
 <p>If <var>project</var> and <var>repository</var> are specified, a git repository is cloned
@@ -130,6 +133,12 @@ to the repository under vendor and running <code>git checkout &lt;tag></code>.</
 
 <p>Any repository frozen under <code>vendor/</code> will be added to the Puppet load path
 when using <code>rump go</code>.</p></dd>
+<dt class="flush"><code>go</code></dt><dd><p>Do a Puppet run. Assumes the current directory is a repository of Puppet
+manifests.</p>
+
+<p><var>puppet-options</var> are any options you can pass to <code>puppet</code> on the command
+line (e.g. <code>--debug</code>, <code>--verbose</code>, <code>--tags foobar</code>).</p></dd>
+<dt class="flush"><code>help</code></dt><dd><p>Display the man page.</p></dd>
 <dt class="flush"><code>init</code></dt><dd><p>Initialise a repo of scaffolded Puppet manifests. Generates scaffolding for
 a repository of Puppet manifests, and <code>git init</code>s the repository.</p></dd>
 <dt><code>scaffold</code></dt><dd><p>Generate scaffolding for a repository of Puppet manifests, primed for Rump.</p>
@@ -142,11 +151,10 @@ multiple users working with the repository from the same UNIX account.</p>
 and email.</p>
 
 <p>If an argument is specified, treat the argument as an RFC2822 formatted
-email address, e.g. John Doe <a href="&#x6d;&#97;&#x69;&#108;&#116;&#x6f;&#x3a;&#106;&#x6f;&#104;&#110;&#x40;&#101;&#120;&#97;&#x6d;&#x70;&#x6c;&#x65;&#46;&#x6f;&#x72;&#103;" data-bare-link="true">&#106;&#111;&#104;&#x6e;&#x40;&#101;&#120;&#x61;&#109;&#112;&#108;&#101;&#46;&#x6f;&#x72;&#103;</a>. Sets <code>user.name</code> and
+email address, e.g. John Doe <a href="&#109;&#x61;&#x69;&#x6c;&#116;&#x6f;&#58;&#106;&#111;&#104;&#x6e;&#x40;&#101;&#x78;&#97;&#109;&#112;&#108;&#x65;&#46;&#x6f;&#114;&#x67;" data-bare-link="true">&#106;&#111;&#104;&#110;&#x40;&#101;&#120;&#97;&#x6d;&#x70;&#x6c;&#101;&#x2e;&#111;&#x72;&#103;</a>. Sets <code>user.name</code> and
 <code>user.email</code> with <code>git config</code>.</p>
 
 <p>Modelled on <code>bzr whoami</code>.</p></dd>
-<dt class="flush"><code>help</code></dt><dd><p>Display the man page.</p></dd>
 </dl>
 
 
@@ -160,10 +168,10 @@ email address, e.g. John Doe <a href="&#x6d;&#97;&#x69;&#108;&#116;&#x6f;&#x3a;&
 <h2 id="RETURN-VALUES">RETURN VALUES</h2>
 
 <ul>
-<li><strong>0</strong>: command completed successfully</li>
-<li><strong>1</strong>: argument error</li>
-<li><strong>2</strong>: subcommand error</li>
-<li><strong>3</strong>: required frozen submodule doesn't exist</li>
+<li><strong>0</strong>: Command completed successfully.</li>
+<li><strong>1</strong>: Argument error.</li>
+<li><strong>2</strong>: Subcommand error.</li>
+<li><strong>3</strong>: Required frozen submodule doesn't exist.</li>
 </ul>
 
 
@@ -176,9 +184,109 @@ need to be templates.</li>
 </ol>
 
 
+<h2 id="EXAMPLES">EXAMPLES</h2>
+
+<p>Initialise a Rump-ready Puppet repository:</p>
+
+<pre><code>$ rump init barfoo
+Initialized empty Git repository in barfoo/.git/
+</code></pre>
+
+<p>Clone a git repository of Puppet manifests:</p>
+
+<pre><code>$ rump clone git@github.com:exampledotorg/manifests.git
+</code></pre>
+
+<p>Clone a git repository of Puppet manifests into a specific directory:</p>
+
+<pre><code>$ rump clone git@github.com:exampledotorg/manifests.git another_clone
+</code></pre>
+
+<p>Graft a Rump scaffold onto an existing repository of manifests:</p>
+
+<pre><code>$ rump scaffold another_clone
+</code></pre>
+
+<p>Freeze Puppet and Facter:</p>
+
+<pre><code>$ rump freeze
+Cloning into vendor/puppet...
+remote: Counting objects: 72007, done.
+remote: Compressing objects: 100% (22120/22120), done.
+remote: Total 72007 (delta 52640), reused 66470 (delta 48322)
+Receiving objects: 100% (72007/72007), 12.13 MiB | 253 KiB/s, done.
+Resolving deltas: 100% (52640/52640), done.
+Cloning into vendor/facter...
+remote: Counting objects: 4185, done.
+remote: Compressing objects: 100% (1930/1930), done.
+remote: Total 4185 (delta 2202), reused 3973 (delta 2095)
+Receiving objects: 100% (4185/4185), 840.81 KiB | 174 KiB/s, done.
+Resolving deltas: 100% (2202/2202), done.
+Freezing complete.
+</code></pre>
+
+<p>Freeze some other repository:</p>
+
+<pre><code>$ rump freeze moonshine https://github.com/railsmachine/moonshine.git
+Cloning into vendor/moonshine...
+remote: Counting objects: 4122, done.
+remote: Compressing objects: 100% (1976/1976), done.
+remote: Total 4122 (delta 2190), reused 3730 (delta 1911)
+Receiving objects: 100% (4122/4122), 543.59 KiB | 58 KiB/s, done.
+Resolving deltas: 100% (2190/2190), done.
+Freezing complete.
+</code></pre>
+
+<p>Freeze Puppet at a particular version:</p>
+
+<pre><code>$ rump freeze puppet git://github.com/puppetlabs/puppet.git --release=2.6.2
+Cloning into /Users/auxesis/foobar/vendor/puppet...
+remote: Counting objects: 72007, done.
+remote: Compressing objects: 100% (22120/22120), done.
+remote: Total 72007 (delta 52640), reused 66470 (delta 48322)
+Receiving objects: 100% (72007/72007), 12.13 MiB | 238 KiB/s, done.
+Resolving deltas: 100% (52640/52640), done.
+Switched to a new branch '2.6.2'
+Freezing complete.
+</code></pre>
+
+<p>Do a Puppet run:</p>
+
+<pre><code>$ rump go
+You should probably be root when running this! Proceeding anyway...
+Using frozen Puppet from vendor/puppet.
+notice: Finished catalog run in 0.01 seconds
+</code></pre>
+
+<p>Do a Puppet run, and pass in arguments to Puppet:</p>
+
+<pre><code>$ rump go --noop --debug
+You should probably be root when running this! Proceeding anyway...
+Using frozen Puppet from vendor/puppet.
+ruby -I vendor/facter/lib -I vendor/puppet/lib vendor/puppet/bin/puppet
+--modulepath modules --confdir etc --vardir var manifests/site.pp --noop --debug
+debug: Creating default schedules
+debug: Failed to load library 'selinux' for feature 'selinux'
+debug: Puppet::Type::File::ProviderMicrosoft_windows: feature microsoft_windows is missing
+debug: Failed to load library 'ldap' for feature 'ldap'
+debug: Failed to load library 'shadow' for feature 'libshadow'
+...
+</code></pre>
+
+<p>Find out who the currently configured git user is:</p>
+
+<pre><code>$ rump whoami
+Jane Doe &lt;jane@example.org&gt;
+</code></pre>
+
+<p>Set the git user:</p>
+
+<pre><code>$ rump whoami 'John Doe &lt;john@example.org&gt;'
+</code></pre>
+
 <h2 id="AUTHOR">AUTHOR</h2>
 
-<p>Lindsay Holmwood <a href="&#x6d;&#x61;&#x69;&#108;&#116;&#x6f;&#x3a;&#x6c;&#x69;&#110;&#100;&#x73;&#x61;&#121;&#x40;&#104;&#111;&#x6c;&#x6d;&#x77;&#111;&#x6f;&#100;&#46;&#x69;&#x64;&#46;&#x61;&#117;" data-bare-link="true">&#108;&#x69;&#x6e;&#x64;&#115;&#97;&#x79;&#64;&#x68;&#111;&#x6c;&#x6d;&#x77;&#111;&#x6f;&#x64;&#x2e;&#x69;&#x64;&#x2e;&#97;&#x75;</a></p>
+<p>Lindsay Holmwood <a href="&#109;&#x61;&#x69;&#x6c;&#116;&#x6f;&#x3a;&#108;&#x69;&#110;&#x64;&#115;&#x61;&#121;&#x40;&#x68;&#111;&#x6c;&#x6d;&#x77;&#x6f;&#x6f;&#100;&#46;&#x69;&#x64;&#x2e;&#97;&#117;" data-bare-link="true">&#108;&#105;&#110;&#x64;&#115;&#97;&#x79;&#x40;&#x68;&#x6f;&#108;&#x6d;&#x77;&#111;&#111;&#x64;&#x2e;&#105;&#x64;&#46;&#x61;&#117;</a></p>
 
 <h2 id="COPYRIGHT">COPYRIGHT</h2>
 
