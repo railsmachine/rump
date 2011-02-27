@@ -3,11 +3,18 @@ Rump
 
 Rump helps you run Puppet locally against a Git checkout.
 
-This is great for locally iterating your Puppet manifests very quickly, then
-pushing them up to a repository somewhere else to share the changes.
+Rump supports a Puppet workflow where you quickly + iteratively develop your
+Puppet manifests on a single machine, then push your changes up to a repository
+to deploy to the rest of your infrastructure.
 
-This also works well with a Capistrano-style deployment, where you remotely
-instruct Rump to check out a copy of the latest manifests and run them.
+This workflow also complements a Capistrano or MCollective-style deployment,
+where you remotely instruct Rump to check out a copy of the latest manifests
+and run them.
+
+Rump also has the ability to freeze Puppet in to the manifests repository,
+letting you quickly test different versions of Puppet without waiting for
+packages to appear, and reducing the dependencies on a system to run Puppet
+down to just Ruby and git.
 
 Installing dependencies
 -----------------------
@@ -19,23 +26,25 @@ On the server you're configuring with Puppet, run:
 Make sure your hostname is set:
 
     $ sudo vi /etc/hostname
-      foo.bar.railsmachine.net
+      foo.bar.example.org
     $ sudo hostname -F /etc/hostname
 
 
 Using Rump
 ----------
 
+Make sure you check out the [man pages](blob/master/man/rump.1.ronn).
+
 Check out your repository of Puppet manifests:
 
-    $ rump clone git@github.com:railsmachine/puppet.git
+    $ rump clone git@github.com:me_at_example_dot_org/puppet.git
 
 You'll want to set up a `~/.gitconfig` in your home directory so you know who's
 making changes:
 
     [user]
     name = My Name
-    email = me@railsmachine.com
+    email = me@example.org
 
     [push]
     default = matching
@@ -44,11 +53,11 @@ There's nothing stopping you from running Rump against different checkouts/branc
 of manifests. This is especially powerful when developing locally with the following
 workflow:
 
-   1. `rump clone git@github.com:railsmachine/puppet.git`
+   1. `rump clone git@github.com:me_at_example_dot_org/puppet.git`
    2. `rump go`
    3. `cd puppet && git checkout -b new_feature`
-   4. make your changes && `rump go`
-   5. iterate until everything's working
+   4. Make your changes &amp;&amp; `rump go`
+   5. *Iterate until everything's working*
    6. `git checkout master && git merge new_feature`
    7. `git push`
 
@@ -59,8 +68,6 @@ Running Puppet
 When you make changes, run Puppet through Rump:
 
     $ sudo rump go
-
-(I would love to use `run` instead of `go`, but `run` is a reserved word in Thor)
 
 You can append options you'd normally pass to the `puppet` command at the end
 of `rump go`:
@@ -112,7 +119,8 @@ Quirks
 ------
 
 1. Puppet's fileserver (`source => "puppet:///..."` on File resources) doesn't
-   appear to work. For now, all files need to be templates.
+   behave as expected on Puppet < 2.6. If you are using Puppet < 2.6, all files
+   need to be templates.
 
 2. Manifests need to be in modules so Puppet can pick them up correctly.
 
