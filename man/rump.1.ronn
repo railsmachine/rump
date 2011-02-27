@@ -3,7 +3,7 @@ Rump
 
 ## NAME ##
 
-  rump - helps you run Puppet locally against a Git checkout
+  rump - Do Puppet runs locally from a Git checkout
 
 ## SYNOPSIS ##
 
