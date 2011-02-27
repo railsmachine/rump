@@ -110,9 +110,11 @@ class Rump < Thor
         version = $1
         commands << { :command => "git checkout -b #{version} #{version}", :directory => @root.join('vendor', project) }
       end
+      commands << { :command => "git commit --quiet -am 'Froze in #{repository} as a submodule'" }
     else
       commands << { :command => "git submodule add git://github.com/puppetlabs/puppet.git #{@root.join('vendor', 'puppet')}" }
       commands << { :command => "git submodule add git://github.com/puppetlabs/facter.git #{@root.join('vendor', 'facter')}" }
+      commands << { :command => "git commit --quiet -am 'Froze in Puppet + Facter as submodules'" }
     end
 
     commands.each do |attrs|
@@ -123,7 +125,6 @@ class Rump < Thor
     end
 
     info "Freezing complete."
-    info "Make sure to run git add + git commit with the proper arguments to make the freeze permanent!"
   end
 
   desc "scaffold <project>", "generate scaffolding for a repository of Puppet manifests"
