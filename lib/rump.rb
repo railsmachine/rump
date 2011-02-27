@@ -3,6 +3,34 @@
 require 'thor'
 require 'pathname'
 
+module Logging
+  ESCAPES = { :green  => "\033[0;32m",
+              :yellow => "\033[0;33m",
+              :red    => "\033[47;31m",
+              :reset  => "\033[0m" }
+
+  def info(message)
+    emit(:message => message, :color => :green)
+  end
+
+  def warn(message)
+    emit(:message => message, :color => :yellow)
+  end
+
+  def error(message)
+    emit(:message => message, :color => :red)
+  end
+
+  def emit(opts={})
+    color   = opts[:color]
+    message = opts[:message]
+    print ESCAPES[color]
+    print message
+    print ESCAPES[:reset]
+    print "\n"
+  end
+end
+
 # Thor's default stack trace on errors is ugly - make it pretty.
 class Thor
   class << self
@@ -15,6 +43,7 @@ end
 
 
 class Rump < Thor
+  include Logging
 
   def initialize
     super
@@ -41,7 +70,7 @@ class Rump < Thor
   desc "go [puppet arguments]", "do a local Puppet run"
   def go(*puppet_args)
     if ENV['USER'] != "root"
-      puts "You should probably be root when running this! Proceeding anyway..."
+      warn "You should probably be root when running this! Proceeding anyway..."
     end
 
     args = []
@@ -51,7 +80,7 @@ class Rump < Thor
         args << "-I #{@root.join('vendor', dir, 'lib')}"
       end
       args << "#{@root.join('vendor', 'puppet', 'bin', 'puppet')}"
-      puts "Using frozen Puppet from #{@root.join('vendor', 'puppet')}."
+      info "Using frozen Puppet from #{@root.join('vendor', 'puppet')}."
     else
       abort_unless_puppet_installed(:message => "Please either install it on your system or freeze it with 'rump freeze'")
       args << "puppet"
@@ -93,8 +122,8 @@ class Rump < Thor
       end
     end
 
-    puts "Freezing complete."
-    puts "Make sure to run git add + git commit with the proper arguments to make the freeze permanent!"
+    info "Freezing complete."
+    info "Make sure to run git add + git commit with the proper arguments to make the freeze permanent!"
   end
 
   desc "scaffold <project>", "generate scaffolding for a repository of Puppet manifests"
@@ -179,7 +208,7 @@ class Rump < Thor
       email = `git config user.email`.strip
 
       if name.empty? || email.empty?
-        puts "You don't have a name or email set."
+        warn "You don't have a name or email set."
       else
         puts "#{name} <#{email}>"
       end
@@ -202,8 +231,8 @@ class Rump < Thor
 
         def abort_unless_#{bin}_installed(opts={})
           unless #{bin}_installed?
-            puts "You don't have #{bin.capitalize} installed!"
-            puts opts[:message] || "Please install it on your system."
+            error "You don't have #{bin.capitalize} installed!"
+            error opts[:message] || "Please install it on your system."
             exit 3
           end
         end
