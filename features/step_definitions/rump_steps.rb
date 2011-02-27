@@ -8,7 +8,10 @@ Given /^I have an empty git repository named "([^\"]*)"$/ do |repo_name|
   FileUtils.mkdir_p(repo_path)
 
   Dir.chdir(repo_path) do
-    commands = ["git init -q", "touch foo", "git add foo", "git commit -qm 'init' ."]
+    commands = [ "git init -q",
+                 "touch foo",
+                 "git add foo",
+                 "git commit -qm 'init' ." ]
     commands.each do |command|
       system(command).should be_true
     end
