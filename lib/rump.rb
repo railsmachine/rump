@@ -81,7 +81,6 @@ class Rump < Thor
         version = $1
         commands << { :command => "git checkout -b #{version} #{version}", :directory => @root.join('vendor', project) }
       end
-
     else
       commands << { :command => "git submodule add git://github.com/puppetlabs/puppet.git #{@root.join('vendor', 'puppet')}" }
       commands << { :command => "git submodule add git://github.com/puppetlabs/facter.git #{@root.join('vendor', 'facter')}" }
