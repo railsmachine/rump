@@ -75,7 +75,7 @@ end
 Given /^I have a simple Puppet repository named "([^\"]*)"$/ do |repo_name|
   repo_path = @basedir.join(repo_name)
   simple_path = ROOT.join('features', 'support', 'repos', 'simple')
-  hostname = Socket.gethostname
+  hostname = Socket.gethostname.split('.').first
 
   FileUtils.rm_rf(repo_path)
   FileUtils.cp_r(simple_path, repo_path)
@@ -97,7 +97,7 @@ end
 Given /^I have a simple Puppet 2.6 repository named "([^"]*)"$/ do |repo_name|
   repo_path = @basedir.join(repo_name)
   simple_path = ROOT.join('features', 'support', 'repos', 'simple_26')
-  hostname = Socket.gethostname
+  hostname = Socket.gethostname.split('.').first
 
   FileUtils.rm_rf(repo_path)
   FileUtils.cp_r(simple_path, repo_path)
