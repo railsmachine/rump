@@ -56,10 +56,11 @@ workflow:
    1. `rump clone git@github.com:me_at_example_dot_org/puppet.git`
    2. `rump go`
    3. `cd puppet && git checkout -b new_feature`
-   4. Make your changes &amp;&amp; `rump go`
-   5. *Iterate until everything's working*
-   6. `git checkout master && git merge new_feature`
-   7. `git push`
+   4. Make your changes &amp;&amp; `rump go --noop` to see what will change.
+   5. Apply the changes with `rump go`
+   6. *Iterate until everything's working*
+   7. `git checkout master && git merge new_feature`
+   8. `git push`
 
 Freezing Puppet
 ---------------
