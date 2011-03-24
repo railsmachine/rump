@@ -7,7 +7,7 @@ Rump
 
 ## SYNOPSIS ##
 
-  * `rump` go [<puppet-options>]
+  * `rump` shake [<puppet-options>]
   * `rump` clone <repository> [directory]
   * `rump` freeze [<project> <repository> --release=<release>]
   * `rump` whoami [rfc2822-address]
@@ -59,9 +59,9 @@ down to just Ruby and git.
     to the repository under vendor and running `git checkout <tag>`.
 
     Any repository frozen under `vendor/` will be added to the Puppet load path
-    when using `rump go`.
+    when using `rump shake`.
 
-  * `go`:
+  * `shake`:
     Do a Puppet run. Assumes the current directory is a repository of Puppet
     manifests.
 
@@ -172,14 +172,14 @@ Freeze Puppet at a particular version:
 
 Do a Puppet run:
 
-    $ rump go
+    $ rump shake
     You should probably be root when running this! Proceeding anyway...
     Using frozen Puppet from vendor/puppet.
     notice: Finished catalog run in 0.01 seconds
 
 Do a Puppet run, and pass in arguments to Puppet:
 
-    $ rump go --noop --debug
+    $ rump shake --noop --debug
     You should probably be root when running this! Proceeding anyway...
     Using frozen Puppet from vendor/puppet.
     ruby -I vendor/facter/lib -I vendor/puppet/lib vendor/puppet/bin/puppet

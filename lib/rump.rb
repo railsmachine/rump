@@ -67,8 +67,8 @@ class Rump < Thor
     end
   end
 
-  desc "go [puppet arguments]", "do a local Puppet run"
-  def go(*puppet_args)
+  desc "shake [puppet arguments]", "do a local Puppet run"
+  def shake(*puppet_args)
     if ENV['USER'] != "root"
       warn "You should probably be root when running this! Proceeding anyway..."
     end
@@ -151,11 +151,11 @@ class Rump < Thor
 
         From within this directory, run:
 
-            rump go
+            rump shake
 
-        You can pass options to Puppet after the 'go':
+        You can pass options to Puppet after the 'shake':
 
-            rump go --debug --test
+            rump shake --debug --test
 
         Freezing Puppet
         ---------------
@@ -172,7 +172,7 @@ class Rump < Thor
 
             git commit -m 'added facter + puppet submodules' .
 
-        Now Rump will use the frozen Puppet when you run 'rump go'.
+        Now Rump will use the frozen Puppet when you run 'rump shake'.
 
       README
     end

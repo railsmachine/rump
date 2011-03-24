@@ -23,7 +23,7 @@ Feature: Rump
     And "puppet" is on my path
     When I run "rump clone foobar simple-puppet"
     Given I am working in "/tmp/simple-puppet"
-    When I run "rump go"
+    When I run "rump shake"
     Then I should see a file at "/tmp/checkout"
 
   @offline
@@ -104,7 +104,7 @@ Feature: Rump
     When I run "rump clone foobar simple-puppet"
     Given I am working in "/tmp/simple-puppet"
     When I run "rump freeze"
-    And I run "rump go"
+    And I run "rump shake"
     Then I should see a file at "/tmp/checkout"
 
   @online
@@ -133,7 +133,7 @@ Feature: Rump
     Given I am working in "/tmp/simple-puppet"
     When I run "rump freeze facter git://github.com/puppetlabs/facter.git"
     And I run "rump freeze puppet git://github.com/puppetlabs/puppet.git"
-    And I run "rump go"
+    And I run "rump shake"
     Then I should see a file at "/tmp/checkout"
 
   @online
@@ -146,7 +146,7 @@ Feature: Rump
     Given I am working in "/tmp/tagged-puppet"
     When I run "rump freeze facter git://github.com/puppetlabs/facter.git --release=1.5.7"
     And I run "rump freeze puppet git://github.com/puppetlabs/puppet.git --release=0.25.4"
-    And I run "rump go"
+    And I run "rump shake"
     Then I should see a file at "/tmp/checkout"
 
   @online
@@ -159,7 +159,7 @@ Feature: Rump
     Given I am working in "/tmp/tagged-puppet"
     When I run "rump freeze facter git://github.com/puppetlabs/facter.git --release=1.5.8"
     And I run "rump freeze puppet git://github.com/puppetlabs/puppet.git --release=2.6.4"
-    And I run "rump go"
+    And I run "rump shake"
     Then I should see a file at "/tmp/checkout"
 
   @offline

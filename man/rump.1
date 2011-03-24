@@ -9,7 +9,7 @@ rump \- Do Puppet runs locally from a Git checkout
 .SH "SYNOPSIS"
 .
 .IP "\(bu" 4
-\fBrump\fR go [\fIpuppet\-options\fR]
+\fBrump\fR shake [\fIpuppet\-options\fR]
 .
 .IP "\(bu" 4
 \fBrump\fR clone \fIrepository\fR [directory]
@@ -66,10 +66,10 @@ If \fB\-\-release\fR is specified, \fBfreeze\fR will create and switch to a bran
 Once the repository is frozen in, switch between tagged releases by \fBcd\fRing to the repository under vendor and running \fBgit checkout <tag>\fR\.
 .
 .IP
-Any repository frozen under \fBvendor/\fR will be added to the Puppet load path when using \fBrump go\fR\.
+Any repository frozen under \fBvendor/\fR will be added to the Puppet load path when using \fBrump shake\fR\.
 .
 .TP
-\fBgo\fR
+\fBshake\fR
 Do a Puppet run\. Assumes the current directory is a repository of Puppet manifests\.
 .
 .IP
@@ -259,7 +259,7 @@ Do a Puppet run:
 .
 .nf
 
-$ rump go
+$ rump shake
 You should probably be root when running this! Proceeding anyway\.\.\.
 Using frozen Puppet from vendor/puppet\.
 notice: Finished catalog run in 0\.01 seconds
@@ -275,7 +275,7 @@ Do a Puppet run, and pass in arguments to Puppet:
 .
 .nf
 
-$ rump go \-\-noop \-\-debug
+$ rump shake \-\-noop \-\-debug
 You should probably be root when running this! Proceeding anyway\.\.\.
 Using frozen Puppet from vendor/puppet\.
 ruby \-I vendor/facter/lib \-I vendor/puppet/lib vendor/puppet/bin/puppet
