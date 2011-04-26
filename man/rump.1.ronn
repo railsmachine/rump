@@ -207,7 +207,7 @@ Lindsay Holmwood <lindsay@holmwood.id.au>
 
 ## COPYRIGHT ##
 
-Rump is copyright Rails Machine LLC.
+Copyright Rails Machine LLC 2010-2011, released under the LGPL
 
 ## SEE ALSO ##
 

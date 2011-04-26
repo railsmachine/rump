@@ -3,7 +3,7 @@ Rump
 
 Rump helps you run Puppet locally against a Git checkout.
 
-Rump supports a Puppet workflow where you quickly + iteratively develop your
+Rump encourages a Puppet workflow where you quickly + iteratively develop your
 Puppet manifests on a single machine, then push your changes up to a repository
 to deploy to the rest of your infrastructure.
 
@@ -16,24 +16,15 @@ letting you quickly test different versions of Puppet without waiting for
 packages to appear, and reducing the dependencies on a system to run Puppet
 down to just Ruby and git.
 
-Installing dependencies
------------------------
+Installing
+----------
 
-On the server you're configuring with Puppet, run:
-
-    $ sudo aptitude install puppet git-core
-
-Make sure your hostname is set:
-
-    $ sudo vi /etc/hostname
-      foo.bar.example.org
-    $ sudo hostname -F /etc/hostname
-
+    $ gem install rump
 
 Using Rump
 ----------
 
-Make sure you check out the [man pages](blob/master/man/rump.1.ronn).
+Make sure you check out the [man pages](rump/blob/master/man/rump.1.ronn).
 
 Check out your repository of Puppet manifests:
 
@@ -43,22 +34,6 @@ Now `cd` into the directory, and do a Puppet run:
 
     $ sudo rump go
 
-There's nothing stopping you from running Rump against different checkouts/branches
-of manifests. This is especially powerful when developing locally with the following
-workflow:
-
-   1. `rump clone git@github.com:me_at_example_dot_org/puppet.git`
-   2. `rump go`
-   3. `cd puppet && git checkout -b new_feature`
-   4. Make your changes &amp;&amp; `rump go`
-   5. *Iterate until everything's working*
-   6. `git checkout master && git merge new_feature`
-   7. `git push`
-
-
-Running Puppet
---------------
-
 When you make changes, run Puppet through Rump:
 
     $ sudo rump go
@@ -67,6 +42,19 @@ You can append options you'd normally pass to the `puppet` command at the end
 of `rump go`:
 
     $ sudo rump go --verbose --debug --noop
+
+There's nothing stopping you from running Rump against different checkouts/branches
+of manifests. This is especially powerful when developing locally with the following
+workflow:
+
+   1. `rump clone git@github.com:me_at_example_dot_org/puppet.git`
+   2. `rump go`
+   3. `cd puppet && git checkout -b new_feature`
+   4. Make your changes &amp;&amp; `rump go --noop` to see what will change.
+   5. Apply the changes with `rump go`
+   6. *Iterate until everything's working*
+   7. `git checkout master && git merge new_feature`
+   8. `git push`
 
 Freezing Puppet
 ---------------
@@ -127,7 +115,6 @@ the test requires internet connectivity. Run all but `@online` tests with:
 
     $ cucumber --tags ~@online features/
 
-
 Quirks
 ------
 
@@ -137,3 +124,8 @@ Quirks
 
 2. Manifests need to be in modules so Puppet can pick them up correctly.
 
+License
+-------
+
+Copyright Rails Machine LLC 2010-2011, released under the LGPL. See
+[LICENSE](rump/blob/master/LICENSE) for more info.
