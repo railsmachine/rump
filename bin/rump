@@ -1,16 +1,26 @@
 #!/usr/bin/env ruby
 
+require 'pathname'
+
+# Show the man page
+if ARGV.any? {|arg| arg =~ /help|--help|-h/}
+  root = Pathname.new(File.dirname(__FILE__)).parent.expand_path
+  command = "man #{root + 'man' + 'rump.1'}"
+  exec(command)
+end
+
+# If we are running from the root of a Rump/Puppet repo, load the bundled rump.
+rump_binstub = Pathname.new(Dir.pwd) + 'bin' + 'rump'
+if rump_binstub.exist?
+  load rump_binstub
+end
+
+# Otherwise, load rump from a gem as per usual.
 begin
   require 'rump'
 rescue LoadError
   $: << File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib'))
   require 'rump'
-end
-
-if ARGV.any? {|arg| arg =~ /help|--help|-h/}
-  root = Pathname.new(File.dirname(__FILE__)).parent.expand_path
-  command = "man #{root + 'man' + 'rump.1'}"
-  exec(command)
 end
 
 command   = ARGV.first
