@@ -8,6 +8,7 @@ begin
     gemspec.homepage = "http://github.com/railsmachine/rump"
     gemspec.authors = ["Lindsay Holmwood"]
     gemspec.add_dependency 'thor', '0.13.4'
+    gemspec.add_dependency 'bundler', '1.0.10'
   end
 rescue LoadError
   puts "Jeweler not available. Install it with: gem install jeweler"
