@@ -39,15 +39,9 @@ Check out your repository of Puppet manifests:
 
     $ rump clone git@github.com:me_at_example_dot_org/puppet.git
 
-You'll want to set up a `~/.gitconfig` in your home directory so you know who's
-making changes:
+Now `cd` into the directory, and do a Puppet run:
 
-    [user]
-    name = My Name
-    email = me@example.org
-
-    [push]
-    default = matching
+    $ sudo rump go
 
 There's nothing stopping you from running Rump against different checkouts/branches
 of manifests. This is especially powerful when developing locally with the following
@@ -77,7 +71,8 @@ of `rump go`:
 Freezing Puppet
 ---------------
 
-If you are using Git, you can freeze Puppet into your project as a submodule. This
+Alternatively, if you want to live on the bleeding edge and eschew your
+distribution's packages, you can run Rump entirely from RubyGems or Git. This
 gives you a whole bunch of advantages:
 
  * You only need Ruby installed on your system to run Puppet
@@ -86,21 +81,36 @@ gives you a whole bunch of advantages:
  * Test your manifests against new versions of Puppet in a separate branch
  * Manage upgrades of Puppet outside your operating system's release cycle
 
-You can freeze Puppet very easily:
+You can freeze Puppet and it's dependencies very easily:
 
     $ rump freeze
 
-This will freeze Puppet + Facter under `vendor/`. Alternatively, you can point
-the freezer at any Git repository (local or remote).
+This will freeze Puppet + Facter under `vendor/`, using Bundler.
 
-When you run `rump go`, it checks whether you have frozen Puppet + Facter, and
+When you run `rump go`, Rump checks whether you have frozen Puppet + Facter, and
 runs the frozen Puppet if available.
 
-You can also freeze in arbitrary Git repos:
+You can manage the versions of Puppet you want frozen using the `Gemfile` at
+the root of your project. To use a specific version of Puppet, edit your
+`Gemfile`:
 
-    $ rump freeze moonshine git://github.com/railsmachine/moonshine.git
+    ``` ruby
+    source :rubygems
 
-These will automatically be added to the load path when you run `rump go`
+    gem "puppet", "2.6.4"
+    ```
+
+If you want to live on the bleeding edge, you can run Puppet out of git:
+
+    ``` ruby
+    source :rubygems
+
+    gem "puppet", "2.6.7", :git => "git://github.com/puppetlabs/puppet.git", :tag => "2.7.0rc1"
+    gem "facter", "1.5.8", :git => "git://github.com/puppetlabs/facter.git", :tag => "1.5.9rc5"
+    ```
+
+Any dependency you bundle will automatically be added to the load path when you
+run `rump go`.
 
 Testing Rump
 ------------
