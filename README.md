@@ -94,7 +94,7 @@ You can manage the versions of Puppet you want frozen using the `Gemfile` at
 the root of your project. To use a specific version of Puppet, edit your
 `Gemfile`:
 
-    ``` ruby
+    ```ruby
     source :rubygems
 
     gem "puppet", "2.6.4"
@@ -102,7 +102,7 @@ the root of your project. To use a specific version of Puppet, edit your
 
 If you want to live on the bleeding edge, you can run Puppet out of git:
 
-    ``` ruby
+    ```ruby
     source :rubygems
 
     gem "puppet", "2.6.7", :git => "git://github.com/puppetlabs/puppet.git", :tag => "2.7.0rc1"
