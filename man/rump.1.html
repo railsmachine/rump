@@ -80,7 +80,7 @@
 <h2 id="SYNOPSIS">SYNOPSIS</h2>
 
 <ul>
-<li><code>rump</code> go [<var>puppet-options</var>]</li>
+<li><code>rump</code> shake [<var>puppet-options</var>]</li>
 <li><code>rump</code> clone <var>repository</var> [directory]</li>
 <li><code>rump</code> freeze [<var>project</var> <var>repository</var> --release=<var>release</var>]</li>
 <li><code>rump</code> whoami [rfc2822-address]</li>
@@ -132,8 +132,8 @@ version of Puppet.</p>
 to the repository under vendor and running <code>git checkout &lt;tag></code>.</p>
 
 <p>Any repository frozen under <code>vendor/</code> will be added to the Puppet load path
-when using <code>rump go</code>.</p></dd>
-<dt class="flush"><code>go</code></dt><dd><p>Do a Puppet run. Assumes the current directory is a repository of Puppet
+when using <code>rump shake</code>.</p></dd>
+<dt class="flush"><code>shake</code></dt><dd><p>Do a Puppet run. Assumes the current directory is a repository of Puppet
 manifests.</p>
 
 <p><var>puppet-options</var> are any options you can pass to <code>puppet</code> on the command
@@ -252,7 +252,7 @@ Freezing complete.
 
 <p>Do a Puppet run:</p>
 
-<pre><code>$ rump go
+<pre><code>$ rump shake
 You should probably be root when running this! Proceeding anyway...
 Using frozen Puppet from vendor/puppet.
 notice: Finished catalog run in 0.01 seconds
@@ -260,7 +260,7 @@ notice: Finished catalog run in 0.01 seconds
 
 <p>Do a Puppet run, and pass in arguments to Puppet:</p>
 
-<pre><code>$ rump go --noop --debug
+<pre><code>$ rump shake --noop --debug
 You should probably be root when running this! Proceeding anyway...
 Using frozen Puppet from vendor/puppet.
 ruby -I vendor/facter/lib -I vendor/puppet/lib vendor/puppet/bin/puppet

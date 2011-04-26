@@ -42,22 +42,22 @@ making changes:
 
 When you make changes, run Puppet through Rump:
 
-    $ sudo rump go
+    $ sudo rump shake
 
 You can append options you'd normally pass to the `puppet` command at the end
-of `rump go`:
+of `rump shake`:
 
-    $ sudo rump go --verbose --debug --noop
+    $ sudo rump shake --verbose --debug --noop
 
 There's nothing stopping you from running Rump against different checkouts/branches
 of manifests. This is especially powerful when developing locally with the following
 workflow:
 
    1. `rump clone git@github.com:me_at_example_dot_org/puppet.git`
-   2. `rump go`
+   2. `rump shake`
    3. `cd puppet && git checkout -b new_feature`
-   4. Make your changes &amp;&amp; `rump go --noop` to see what will change.
-   5. Apply the changes with `rump go`
+   4. Make your changes &amp;&amp; `rump shake --noop` to see what will change.
+   5. Apply the changes with `rump shake`
    6. *Iterate until everything's working*
    7. `git checkout master && git merge new_feature`
    8. `git push`
@@ -81,14 +81,14 @@ You can freeze Puppet very easily:
 This will freeze Puppet + Facter under `vendor/`. Alternatively, you can point
 the freezer at any Git repository (local or remote).
 
-When you run `rump go`, it checks whether you have frozen Puppet + Facter, and
+When you run `rump shake`, it checks whether you have frozen Puppet + Facter, and
 runs the frozen Puppet if available.
 
 You can also freeze in arbitrary Git repos:
 
     $ rump freeze moonshine git://github.com/railsmachine/moonshine.git
 
-These will automatically be added to the load path when you run `rump go`
+These will automatically be added to the load path when you run `rump shake`
 
 Testing Rump
 ------------
