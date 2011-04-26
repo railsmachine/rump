@@ -112,8 +112,11 @@ If you want to live on the bleeding edge, you can run Puppet out of git:
 Any dependency you bundle will automatically be added to the load path when you
 run `rump go`.
 
-Testing Rump
-------------
+Developing + Testing Rump
+-------------------------
+
+Check out the repository, and run `bundle install` to suck down all the
+required development dependencies.
 
 There's a suite of Cucumber tests to fully exercise Rump in `features/`:
 
