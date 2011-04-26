@@ -94,20 +94,20 @@ You can manage the versions of Puppet you want frozen using the `Gemfile` at
 the root of your project. To use a specific version of Puppet, edit your
 `Gemfile`:
 
-    ```ruby
-    source :rubygems
+```ruby
+source :rubygems
 
-    gem "puppet", "2.6.4"
-    ```
+gem "puppet", "2.6.4"
+```
 
 If you want to live on the bleeding edge, you can run Puppet out of git:
 
-    ```ruby
-    source :rubygems
+```ruby
+source :rubygems
 
-    gem "puppet", "2.6.7", :git => "git://github.com/puppetlabs/puppet.git", :tag => "2.7.0rc1"
-    gem "facter", "1.5.8", :git => "git://github.com/puppetlabs/facter.git", :tag => "1.5.9rc5"
-    ```
+gem "puppet", "2.6.7", :git => "git://github.com/puppetlabs/puppet.git", :tag => "2.7.0rc1"
+gem "facter", "1.5.8", :git => "git://github.com/puppetlabs/facter.git", :tag => "1.5.9rc5"
+```
 
 Any dependency you bundle will automatically be added to the load path when you
 run `rump go`.
