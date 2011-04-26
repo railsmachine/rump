@@ -141,3 +141,9 @@ end
 When /^I touch "([^\"]*)"$/ do |filename|
   system("touch #{filename} > /dev/null").should be_true
 end
+
+When /^the Gemfile looks like this:$/ do |string|
+  File.open(@basedir + 'Gemfile', 'w') do |f|
+    f << string + "\n"
+  end
+end

@@ -96,7 +96,7 @@ Feature: Rump
     Then running "rump whoami" should output "Spoons McDoom <spoons@mcdoom.com>"
 
   @online
-  Scenario: Freezing Puppet + Facter as submodules
+  Scenario: Freezing Puppet + Facter as gems
     Given I am working in "/tmp"
     And I have a simple Puppet repository named "foobar"
     And there is no "simple-puppet" repository
@@ -108,44 +108,42 @@ Feature: Rump
     Then I should see a file at "/tmp/checkout"
 
   @online
-  Scenario: Automatically initialising frozen submodules on clone
-    Given I am working in "/tmp"
-    And I have a simple Puppet repository named "foobar"
-    And there is no "simple-puppet" repository
-    And there is no "frozen-puppet" repository
-    When I run "rump clone foobar simple-puppet"
-    Given I am working in "/tmp/simple-puppet"
-    When I run "rump freeze"
-    And I run "git add ."
-    And I run "git commit -m 'frozen puppet + facter' ."
-    Given I am working in "/tmp"
-    When I run "rump clone simple-puppet frozen-puppet"
-    Then I should see a directory at "/tmp/frozen-puppet/vendor/facter"
-    Then I should see a directory at "/tmp/frozen-puppet/vendor/puppet"
-
-  @online
-  Scenario: Freezing a specific submodule
+  Scenario: Freezing Puppet + Facter as git repos
     Given I am working in "/tmp"
     And I have a simple Puppet repository named "foobar"
     And there is no "simple-puppet" repository
     And there is no "/tmp/checkout" file
     When I run "rump clone foobar simple-puppet"
     Given I am working in "/tmp/simple-puppet"
-    When I run "rump freeze facter git://github.com/puppetlabs/facter.git"
-    And I run "rump freeze puppet git://github.com/puppetlabs/puppet.git"
+    When the Gemfile looks like this:
+      """
+      source :rubygems
+
+      gem "rump"
+      gem "puppet", "0.0", :git => "git://github.com/puppetlabs/puppet.git"
+      gem "facter", "0.0", :git => "git://github.com/puppetlabs/facter.git"
+      """
+    When I run "rump freeze"
     And I run "rump go"
     Then I should see a file at "/tmp/checkout"
 
   @online
-  Scenario: Freezing a specific submodule at a specific release
+  Scenario: Freezing Puppet + Facter as git repos with specific versions
     Given I am working in "/tmp"
     And I have a simple Puppet repository named "foobar"
-    And there is no "tagged-puppet" repository
+    And there is no "simple-puppet" repository
     And there is no "/tmp/checkout" file
-    When I run "rump clone foobar tagged-puppet"
-    Given I am working in "/tmp/tagged-puppet"
-    When I run "rump freeze facter git://github.com/puppetlabs/facter.git --release=1.5.7"
-    And I run "rump freeze puppet git://github.com/puppetlabs/puppet.git --release=0.25.4"
+    When I run "rump clone foobar simple-puppet"
+    Given I am working in "/tmp/simple-puppet"
+    When the Gemfile looks like this:
+      """
+      source :rubygems
+
+      gem "rump"
+      gem "puppet", "2.7.0rc1", :git => "git://github.com/puppetlabs/puppet.git", :tag => "2.7.0rc1"
+      gem "facter", "1.5.9rc5", :git => "git://github.com/puppetlabs/facter.git", :tag => "1.5.9rc5"
+      """
+    When I run "rump freeze"
     And I run "rump go"
     Then I should see a file at "/tmp/checkout"
 
@@ -157,8 +155,15 @@ Feature: Rump
     And there is no "/tmp/checkout" file
     When I run "rump clone foobar tagged-puppet"
     Given I am working in "/tmp/tagged-puppet"
-    When I run "rump freeze facter git://github.com/puppetlabs/facter.git --release=1.5.8"
-    And I run "rump freeze puppet git://github.com/puppetlabs/puppet.git --release=2.6.4"
+    When the Gemfile looks like this:
+      """
+      source :rubygems
+
+      gem "rump"
+      gem "puppet", "2.6.7", :git => "git://github.com/puppetlabs/puppet.git", :tag => "2.6.7"
+      gem "facter", "1.5.8", :git => "git://github.com/puppetlabs/facter.git", :tag => "1.5.8"
+      """
+    When I run "rump freeze"
     And I run "rump go"
     Then I should see a file at "/tmp/checkout"
 
@@ -173,7 +178,7 @@ Feature: Rump
       | /tmp/my-new-project/manifests |
       | /tmp/my-new-project/modules   |
       | /tmp/my-new-project/vendor    |
-    And I should see a file at "/tmp/my-new-project/README"
+    And I should see a file at "/tmp/my-new-project/README.md"
 
 
 
