@@ -75,11 +75,7 @@ class Rump < Thor
 
     args = []
     if has_frozen_components?
-      args << "ruby"
-      Dir.glob("#{@root.join('vendor')}/*").each do |dir|
-        args << "-I #{@root.join('vendor', dir, 'lib')}"
-      end
-      args << "#{@root.join('vendor', 'puppet', 'bin', 'puppet')}"
+      args << "bundle exec puppet"
       info "Using frozen Puppet from #{@root.join('vendor', 'puppet')}."
     else
       abort_unless_puppet_installed(:message => "Please either install it on your system or freeze it with 'rump freeze'")
@@ -100,22 +96,12 @@ class Rump < Thor
   desc "freeze [repository, project]", "freeze Puppet into your manifests repository"
   def freeze(*args)
     abort_unless_git_installed
+    abort_unless_bundle_installed
 
     commands = []
-    if args.size >= 2
-      project    = args[0]
-      repository = args[1]
-      commands << { :command => "git submodule add #{repository} #{@root.join('vendor', project)}" }
-      if args.detect { |arg| arg =~ /^--release\=(.+)/ }
-        version = $1
-        commands << { :command => "git checkout -b #{version} #{version}", :directory => @root.join('vendor', project) }
-      end
-      commands << { :command => "git commit --quiet -am 'Froze in #{repository} as a submodule'" }
-    else
-      commands << { :command => "git submodule add git://github.com/puppetlabs/puppet.git #{@root.join('vendor', 'puppet')}" }
-      commands << { :command => "git submodule add git://github.com/puppetlabs/facter.git #{@root.join('vendor', 'facter')}" }
-      commands << { :command => "git commit --quiet -am 'Froze in Puppet + Facter as submodules'" }
-    end
+    commands << { :command => "bundle install --path=#{@root + 'vendor'} --binstubs" }
+    commands << { :command => "git add Gemfile.lock bin/ vendor/ .bundle/" }
+    commands << { :command => "git commit --quiet -m 'Bundled Puppet + Facter.' Gemfile* bin/ vendor/ .bundle/" }
 
     commands.each do |attrs|
       dir = attrs[:directory] || @root
@@ -135,6 +121,24 @@ class Rump < Thor
       @root + project + 'var/reports',
       @root + project + 'vendor' ].each do |directory|
       FileUtils.mkdir_p(directory)
+    end
+
+    File.open(@root + project + '.gitignore', 'w') do |f|
+      f << <<-GITIGNORE.gsub(/^ {8}/, '')
+        var/state/
+        var/reports/
+      GITIGNORE
+    end
+
+    File.open(@root + project + 'Gemfile', 'w') do |f|
+      f << <<-GEMFILE.gsub(/^ {8}/, '')
+        #!/usr/bin/env ruby
+
+        source :rubygems
+
+        gem "puppet"
+        gem "facter"
+      GEMFILE
     end
 
     File.open(@root.join(project, 'README.md'), 'w') do |f|
@@ -167,10 +171,6 @@ class Rump < Thor
         Now you can freeze Puppet:
 
             rump freeze
-
-        Once Rump has frozen Puppet, commit the changes:
-
-            git commit -m 'added facter + puppet submodules' .
 
         Now Rump will use the frozen Puppet when you run 'rump go'.
 
@@ -211,7 +211,7 @@ class Rump < Thor
       system("git config user.email '#{email}'")
     # setter
     else
-      name = `git config user.name`.strip
+      name  = `git config user.name`.strip
       email = `git config user.email`.strip
 
       if name.empty? || email.empty?
@@ -224,12 +224,14 @@ class Rump < Thor
 
   private
   def has_frozen_components?
-    vendored = Dir.glob("#{@root.join('vendor')}/*").map {|v| v.split('/').last}
-    vendored.include?("puppet") && vendored.include?("facter")
+    puppet = system("bundle show puppet")
+    facter = system("bundle show facter")
+
+    puppet && facter
   end
 
   # helper + abortive methods
-  %w(puppet git).each do |bin|
+  %w(puppet git bundle).each do |bin|
     class_eval <<-METHOD, __FILE__, __LINE__
       no_tasks do
         def #{bin}_installed?
