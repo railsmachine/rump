@@ -114,75 +114,17 @@ class Rump < Thor
   end
 
   desc "scaffold <project>", "generate scaffolding for a repository of Puppet manifests"
-  def scaffold(project)
-    [ @root + project,
-      @root + project + 'manifests',
-      @root + project + 'modules',
-      @root + project + 'var/reports',
-      @root + project + 'vendor' ].each do |directory|
-      FileUtils.mkdir_p(directory)
-    end
-
-    File.open(@root + project + '.gitignore', 'w') do |f|
-      f << <<-GITIGNORE.gsub(/^ {8}/, '')
-        var/state/
-        var/reports/
-      GITIGNORE
-    end
-
-    File.open(@root + project + 'Gemfile', 'w') do |f|
-      f << <<-GEMFILE.gsub(/^ {8}/, '')
-        #!/usr/bin/env ruby
-
-        source :rubygems
-
-        gem "puppet"
-        gem "facter"
-      GEMFILE
-    end
-
-    File.open(@root.join(project, 'README.md'), 'w') do |f|
-      f << <<-README.gsub(/^ {8}/, '')
-        #{project} manifests
-        #{"=" * project.size}==========
-
-        modules/ <= Puppet modules
-        manifests/ <= Puppet nodes
-        vendor/ <= frozen Puppet + Facter
-
-        Running Puppet with Rump
-        ------------------------
-
-        From within this directory, run:
-
-            rump go
-
-        You can pass options to Puppet after the 'go':
-
-            rump go --debug --test
-
-        Freezing Puppet
-        ---------------
-
-        Firstly, you need to create a git repository:
-
-            git init
-
-        Now you can freeze Puppet:
-
-            rump freeze
-
-        Now Rump will use the frozen Puppet when you run 'rump go'.
-
-      README
-    end
+  def scaffold(puppet_path)
+    template_path = @install_root.join('generators', 'puppet')
+    FileUtils.cp_r(template_path, puppet_path)
   end
 
   desc "init <project>", "initialise a repo of scaffolded Puppet manifests"
   def init(project)
-    scaffold(project)
     repo_path = @root.join(project)
     template_path = @install_root.join('generators', 'git')
+
+    scaffold(repo_path)
 
     Dir.chdir(repo_path) do
       commands = [ "git init --quiet --template=#{template_path}",
