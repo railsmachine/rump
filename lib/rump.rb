@@ -81,6 +81,11 @@ class Rump < Thor
       abort_unless_puppet_installed(:message => "Please either install it on your system or freeze it with 'rump freeze'")
       args << "puppet"
     end
+
+    if puppet_version[0] > 0
+      args << 'apply'
+    end
+
     args << "--modulepath #{@root.join('modules')}"
     args << "--confdir #{@root.join('etc')}" unless puppet_args.include?("--confdir")
     args << "--vardir #{@root.join('var')}" unless puppet_args.include?("--vardir")
@@ -228,6 +233,10 @@ class Rump < Thor
     facter = system("bundle show facter")
 
     puppet && facter
+  end
+
+  def puppet_version
+    @puppet_version ||= `puppet --version`.split('.').map(&:to_i)
   end
 
   # helper + abortive methods
