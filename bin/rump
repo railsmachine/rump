@@ -11,7 +11,7 @@ end
 
 # If we are running from the root of a Rump/Puppet repo, load the bundled rump.
 rump_binstub = Pathname.new(Dir.pwd) + 'bin' + 'rump'
-if rump_binstub.exist?
+if rump_binstub.exist? and rump_binstub.to_s != __FILE__
   load rump_binstub
 end
 
