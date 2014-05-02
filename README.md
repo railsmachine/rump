@@ -127,5 +127,4 @@ Quirks
 License
 -------
 
-Copyright Rails Machine LLC 2010-2011, released under the LGPL. See
-[LICENSE](rump/blob/master/LICENSE) for more info.
+Unless otherwise specified, all content copyright &copy; 2014, [Rails Machine, LLC](http://railsmachine.com)
