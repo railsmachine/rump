@@ -1,11 +1,4 @@
-#!/usr/bin/env ruby
+source "http://rubygems.org"
 
-source :rubygems
-
-group :development do
-  gem "thor", "0.13.4"
-  gem "puppet"
-  gem "cucumber"
-  gem "jeweler"
-end
-
+# Specify your gem's dependencies in rump.gemspec
+gemspec

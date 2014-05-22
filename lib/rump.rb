@@ -2,6 +2,7 @@
 
 require 'thor'
 require 'pathname'
+require 'rump/version'
 
 module Logging
   ESCAPES = { :green  => "\033[0;32m",
@@ -45,7 +46,7 @@ end
 class Rump < Thor
   include Logging
 
-  def initialize
+  def initialize(args=[], options={}, config={})
     super
     @root = Pathname.new(Dir.getwd)
     @install_root = Pathname.new(File.expand_path(File.join(File.dirname(__FILE__))))
